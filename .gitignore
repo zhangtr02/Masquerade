@@ -80,3 +80,6 @@ Output/
 */Output/
 
 Release
+
+# Temporary compilation folders
+enc_temp_folder/
