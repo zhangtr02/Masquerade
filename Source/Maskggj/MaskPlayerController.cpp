@@ -131,6 +131,9 @@ void AMaskPlayerController::HandleUITransitionFinished()
 	{
 		OnStatsChanged.Broadcast(Intelligence, Charm, Stamina);
 	}
+	else {
+
+	}
 
 	// GameMode 监听到事件后，如果判定故事结束，会调用GameOver() 把 bIsGameOver 设为 true
 	if (bIsGameOver)

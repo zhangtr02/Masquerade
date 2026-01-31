@@ -9,6 +9,7 @@
 class UImage;
 class UTextBlock;
 class UButton;
+
 UCLASS()
 class MASKGGJ_API UEndStoryUserWidget : public UUserWidget
 {

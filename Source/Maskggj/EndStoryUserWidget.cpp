@@ -7,6 +7,7 @@
 #include "Components/Button.h"
 #include "Blueprint/UserWidget.h"
 
+
 void UEndStoryUserWidget::NativeConstruct()
 {
     Super::NativeConstruct();

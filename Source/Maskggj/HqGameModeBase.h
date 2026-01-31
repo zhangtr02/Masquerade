@@ -30,7 +30,6 @@ public:
 
 	UFUNCTION()
 	void TriggerEnding(FName EndingRowName);
-	// 必须加 UFUNCTION，否则绑定不上动态委托
 	UFUNCTION()
 	void OnStatsChangedHandler(int32 Intel, int32 Charm, int32 Stamina);
 
