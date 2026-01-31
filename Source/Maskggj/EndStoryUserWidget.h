@@ -8,6 +8,7 @@
 
 class UImage;
 class UTextBlock;
+class UButton;
 UCLASS()
 class MASKGGJ_API UEndStoryUserWidget : public UUserWidget
 {
@@ -17,10 +18,14 @@ public:
 	TObjectPtr<UImage> CGImage;
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> StoryText;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> EndBtn;
 	UPROPERTY(EditAnywhere, Category = "Logic")
 	TSubclassOf<UUserWidget> MainMenuWidgetClass;
+	UFUNCTION()
+	void OnEndBtnClicked();
 
-	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+	virtual void NativeConstruct() override;
 public:
 	void SetupWidget(UTexture2D* Texture, FText Content);
 };

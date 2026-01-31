@@ -23,25 +23,28 @@ void AMaskPlayerController::BeginPlay()
 
 	GameI = GetGameInstance()->GetSubsystem<UHqGameInstanceSubsystem>();
 	InitialTable();
+	//InitialDialogueWidget();
+}
 
+void AMaskPlayerController::InitialDialogueWidget()
+{
 	if (!DialogueWidgetClass) return;
 	DialogueWidget = CreateWidget<UDialogueWidget>(this, DialogueWidgetClass);
 	if (!DialogueWidget) return;
 
 	DialogueWidget->AddToViewport(10);
-	
+
 	DialogueWidget->OnChoiceClicked.AddDynamic(this, &AMaskPlayerController::HandleChoiceClicked);
 	DialogueWidget->OnTransitionFinished.AddDynamic(this, &AMaskPlayerController::HandleUITransitionFinished);
-	
+
 	DialogueWidget->MaxIntelligence = MaxIntelligence;
 	DialogueWidget->MaxCharm = MaxCharm;
 	DialogueWidget->MaxStamina = MaxStamina;
-	
+
 	DialogueWidget->SetStats(Intelligence, Charm, Stamina);
-	
 	ShowRandomEvent();
 	DialogueWidget->PlayEventIn();
-	
+
 	SetShowMouseCursor(true);
 	FInputModeGameAndUI Mode;
 	Mode.SetHideCursorDuringCapture(false);
@@ -124,7 +127,16 @@ void AMaskPlayerController::HandleUITransitionFinished()
 	Stamina = FMath::Clamp(Stamina + Delta.Stamina, 0, MaxStamina);
 
 	DialogueWidget->SetStats(Intelligence, Charm, Stamina);
-	
+	if (OnStatsChanged.IsBound())
+	{
+		OnStatsChanged.Broadcast(Intelligence, Charm, Stamina);
+	}
+
+	// GameMode 监听到事件后，如果判定故事结束，会调用GameOver() 把 bIsGameOver 设为 true
+	if (bIsGameOver)
+	{
+		return;
+	}
 	ShowRandomEvent();
 	DialogueWidget->PlayEventIn();
 	
@@ -187,5 +199,17 @@ void AMaskPlayerController::ShowRandomEvent()
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[LRY] Row [%s] has no sound assigned."), *RowName.ToString());
+	}
+}
+
+void AMaskPlayerController::CloseDialogueWidget()
+{
+	if (DialogueWidget)
+	{
+		DialogueWidget->RemoveFromParent();
+		DialogueWidget = nullptr;
+		//FInputModeGameOnly GameMode;
+		//SetInputMode(GameMode);
+		//SetShowMouseCursor(false);
 	}
 }

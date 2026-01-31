@@ -9,9 +9,18 @@
 /**
  * 
  */
+
+class UButton;
 UCLASS()
 class MASKGGJ_API UTitleUserWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+public:
+	virtual void NativeConstruct() override;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> BeginBtn;
+
+	UFUNCTION()
+	void OnBeginBtnClicked();
+
 };

@@ -11,6 +11,7 @@
 
 class UDialogueWidget;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnPlayerStatsChanged, int32, Intel, int32, Charm, int32, Stamina);
 USTRUCT(BlueprintType)
 struct FShuffleConfig
 {
@@ -42,6 +43,8 @@ class MASKGGJ_API AMaskPlayerController : public APlayerController
 	GENERATED_BODY()
 	AMaskPlayerController();
 public:
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnPlayerStatsChanged OnStatsChanged;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FShuffleConfig ShuffleSettings;
@@ -83,6 +86,18 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 MaxStamina = 100;
+
+	UPROPERTY()
+	bool bIsGameOver = false;
+
+	UFUNCTION()
+	void GameOver() { bIsGameOver = true; }
+
+	UFUNCTION()
+	void InitialDialogueWidget();
+
+	UFUNCTION()
+	void CloseDialogueWidget();
 	
 protected:
 	virtual void BeginPlay() override;
