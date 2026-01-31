@@ -66,6 +66,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void SetImage(UImage* Image);
+
+	UFUNCTION(BlueprintCallable)
+	void ChangeImage(UTexture2D* Img);
 	
 	UFUNCTION(BlueprintCallable)
 	void SetEventText(

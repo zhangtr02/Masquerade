@@ -15,8 +15,4 @@ class MASKGGJ_API AHqGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	void BeginPlay() override;
-
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MaskData")
-	UDataTable* MyDataTable;
 };

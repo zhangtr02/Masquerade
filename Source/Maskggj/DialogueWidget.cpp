@@ -36,6 +36,13 @@ void UDialogueWidget::SetImage(UImage* Image)
 	}
 }
 
+void UDialogueWidget::ChangeImage(UTexture2D* Img)
+{
+	if (IsValid(Img)) {
+		PortraitImage->SetBrushFromTexture(Img);
+	}
+}
+
 void UDialogueWidget::SetEventText(const FText& BottomText, const FText& LeftText, const FText& RightText)
 {
 	if (EventText)
