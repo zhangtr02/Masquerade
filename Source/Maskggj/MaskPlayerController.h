@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "TableItemList.h"
 #include "GameFramework/PlayerController.h"
 #include "MaskPlayerController.generated.h"
 
@@ -16,6 +17,9 @@ class MASKGGJ_API AMaskPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UDataTable> EventTable;
+	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UDialogueWidget> DialogueWidgetClass;
 	
@@ -29,7 +33,12 @@ private:
 	UFUNCTION()
 	void HandleChoiceClicked(int32 ChoiceIndex);
 	
-	int32 Intelligence = 2;
-	int32 Charm = 4;
-	int32 Energy = 6;
+	UFUNCTION()
+	void ShowRandomEvent();
+	
+	int32 Intelligence = 0;
+	int32 Charm = 0;
+	int32 Energy = 0;
+	
+	FTableItemList CurrentEvent;
 };
