@@ -3,7 +3,14 @@
 
 #include "MaskPlayerController.h"
 #include "DialogueWidget.h"
-#include <Kismet/GameplayStatics.h>
+
+AMaskPlayerController::AMaskPlayerController()
+{
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+	AudioComponent->bAllowSpatialization = false;
+	BGMComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("BGMComponent"));
+	BGMComponent->bAutoActivate = false;
+}
 
 void AMaskPlayerController::BeginPlay()
 {
@@ -125,6 +132,11 @@ void AMaskPlayerController::ShowRandomEvent()
 {
 	if (!DialogueWidget) return;
 
+	if (AudioComponent->IsPlaying())
+	{
+		AudioComponent->Stop();
+	}
+
 	FName RowName = (*CurrentRowNames)[RandomIndex++];
 
 	const FTableItemList* Row = RandomTable->FindRow<FTableItemList>(RowName, TEXT("PickRandomEvent"));
@@ -159,7 +171,9 @@ void AMaskPlayerController::ShowRandomEvent()
 	{
 		USoundBase* Sound = GameI->SoundCache.FindRef(Row->SFX);
 		if (Sound) {
-			UGameplayStatics::PlaySound2D(GetWorld(), Sound);
+			AudioComponent->SetSound(Sound);
+			AudioComponent->Play();
+			UE_LOG(LogTemp, Log, TEXT("[LRY] Static Component playing: %s"), *Row->SFX.ToString());
 		}
 		else {
 			UE_LOG(LogTemp, Warning, TEXT("[LRY] Sound[%s] not found."), *Row->SFX.ToString())

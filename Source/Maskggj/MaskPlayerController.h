@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "TableItemList.h"
+#include "Components/AudioComponent.h"
 #include "HqGameInstanceSubsystem.h"
 #include "GameFramework/PlayerController.h"
 #include "MaskPlayerController.generated.h"
@@ -39,6 +40,7 @@ UCLASS()
 class MASKGGJ_API AMaskPlayerController : public APlayerController
 {
 	GENERATED_BODY()
+	AMaskPlayerController();
 public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -53,6 +55,12 @@ public:
 	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UDialogueWidget> DialogueWidgetClass;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UAudioComponent> AudioComponent;
+
+	UPROPERTY(VisibleAnywhere, Category = "Audio")
+	TObjectPtr<UAudioComponent> BGMComponent;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 MaxIntelligence = 100;
@@ -72,7 +80,7 @@ private:
 	TArray<FName>* CurrentRowNames;
 	UPROPERTY()
 	TObjectPtr<UDialogueWidget> DialogueWidget;
-	
+
 	UFUNCTION()
 	void HandleChoiceClicked(int32 ChoiceIndex);
 	
