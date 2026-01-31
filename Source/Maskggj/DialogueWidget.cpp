@@ -28,6 +28,10 @@ void UDialogueWidget::NativeOnInitialized()
 	if (IntelligenceBar) IntelligenceBar->SetVisibility(ESlateVisibility::HitTestInvisible);
 	if (CharmBar)        CharmBar->SetVisibility(ESlateVisibility::HitTestInvisible);
 	if (StaminaBar)       StaminaBar->SetVisibility(ESlateVisibility::HitTestInvisible);
+	
+	if (IntelligenceRedGlowBar) IntelligenceRedGlowBar->SetVisibility(ESlateVisibility::HitTestInvisible);
+	if (CharmRedGlowBar) CharmRedGlowBar->SetVisibility(ESlateVisibility::HitTestInvisible);
+	if (StaminaRedGlowBar) CharmRedGlowBar->SetVisibility(ESlateVisibility::HitTestInvisible);
 }
 
 static void BindAnimOnce(UUserWidget* Widget, UWidgetAnimation* Anim, bool& bBound, const FName FuncName)
@@ -79,18 +83,63 @@ float UDialogueWidget::ToPercent(int32 Value, int32 MaxValue)
 
 void UDialogueWidget::SetStats(int32 Intelligence, int32 Charm, int32 Stamina)
 {
-	if (IntelligenceBar)
+	if (!bStatsInitialized)
+	{
+		bStatsInitialized = true;
+		LastInt = Intelligence;
+		LastCharm = Charm;
+		LastStamina = Stamina;
+	}
+	
+	if (IntelligenceBar && IntelligenceRedGlowBar)
 	{
 		IntelligenceBar->SetPercent(ToPercent(Intelligence, MaxIntelligence));
+		IntelligenceRedGlowBar->SetPercent(ToPercent(Intelligence, MaxIntelligence));
 	}
-	if (CharmBar)
+	if (CharmBar && CharmRedGlowBar)
 	{
 		CharmBar->SetPercent(ToPercent(Charm, MaxCharm));
+		CharmRedGlowBar->SetPercent(ToPercent(Charm, MaxCharm));
 	}
-	if (StaminaBar)
+	if (StaminaBar && StaminaRedGlowBar)
 	{
 		StaminaBar->SetPercent(ToPercent(Stamina, MaxStamina));
+		StaminaRedGlowBar->SetPercent(ToPercent(Stamina, MaxStamina));
 	}
+	
+	const int32 DeltaInt = Intelligence - LastInt;
+	if (DeltaInt > 0 && IntelligenceBumpAnim)
+	{
+		PlayAnimation(IntelligenceBumpAnim, 0.f, 1, EUMGSequencePlayMode::Forward, 1.f);
+	}
+	else if (DeltaInt < 0 && IntelligenceRedGlowAnim)
+	{
+		PlayAnimation(IntelligenceRedGlowAnim, 0.f, 1, EUMGSequencePlayMode::Forward, 1.f);
+	}
+	
+	const int32 DeltaCharm = Charm - LastCharm;
+	if (DeltaCharm > 0 && CharmBumpAnim)
+	{
+		PlayAnimation(CharmBumpAnim, 0.f, 1, EUMGSequencePlayMode::Forward, 1.f);
+	}
+	else if (DeltaCharm < 0 && CharmRedGlowAnim)
+	{
+		PlayAnimation(CharmRedGlowAnim, 0.f, 1, EUMGSequencePlayMode::Forward, 1.f);
+	}
+	
+	const int32 DeltaStamina = Stamina - LastStamina;
+	if (DeltaStamina > 0 && StaminaBumpAnim)
+	{
+		PlayAnimation(StaminaBumpAnim, 0.f, 1, EUMGSequencePlayMode::Forward, 1.f);
+	}
+	else if (DeltaStamina < 0 && StaminaRedGlowAnim)
+	{
+		PlayAnimation(StaminaRedGlowAnim, 0.f, 1, EUMGSequencePlayMode::Forward, 1.f);
+	}
+	
+	LastInt = Intelligence;
+	LastCharm = Charm;
+	LastStamina = Stamina;
 }
 
 void UDialogueWidget::PlayEventIn(float StartAtTime)

@@ -48,11 +48,17 @@ public:
 	UPROPERTY(meta=(BindWidget)) TObjectPtr<UProgressBar> IntelligenceBar;
 	UPROPERTY(meta=(BindWidget)) TObjectPtr<UProgressBar> CharmBar;
 	UPROPERTY(meta=(BindWidget)) TObjectPtr<UProgressBar> StaminaBar;
+	UPROPERTY(meta=(BindWidget)) TObjectPtr<UProgressBar> IntelligenceRedGlowBar;
+	UPROPERTY(meta=(BindWidget)) TObjectPtr<UProgressBar> CharmRedGlowBar;
+	UPROPERTY(meta=(BindWidget)) TObjectPtr<UProgressBar> StaminaRedGlowBar;
 	
 	UPROPERTY(meta=(BindWidget)) TObjectPtr<UWidget> EventOverlay;
 	UPROPERTY(meta=(BindWidget)) TObjectPtr<UWidget> LeftChoiceOverlay;
 	UPROPERTY(meta=(BindWidget)) TObjectPtr<UWidget> RightChoiceOverlay;
 	UPROPERTY(meta=(BindWidget)) TObjectPtr<UWidget> PortraitOverlay;
+	UPROPERTY(meta=(BindWidget)) TObjectPtr<UWidget> IntelligenceOverlay;
+	UPROPERTY(meta=(BindWidget)) TObjectPtr<UWidget> CharmOverlay;
+	UPROPERTY(meta=(BindWidget)) TObjectPtr<UWidget> StaminaOverlay;
 	
 	UPROPERTY(Transient, meta=(BindWidgetAnim)) TObjectPtr<UWidgetAnimation> EventInAnim;
 	UPROPERTY(Transient, meta=(BindWidgetAnim)) TObjectPtr<UWidgetAnimation> EventOutAnim;
@@ -65,8 +71,21 @@ public:
 	UPROPERTY(Transient, meta=(BindWidgetAnim)) TObjectPtr<UWidgetAnimation> PortraitLeftInAnim;
 	UPROPERTY(Transient, meta=(BindWidgetAnim)) TObjectPtr<UWidgetAnimation> PortraitRightInAnim;
 	
+	UPROPERTY(Transient, meta=(BindWidgetAnim)) TObjectPtr<UWidgetAnimation> IntelligenceBumpAnim;
+	UPROPERTY(Transient, meta=(BindWidgetAnim)) TObjectPtr<UWidgetAnimation> CharmBumpAnim;
+	UPROPERTY(Transient, meta=(BindWidgetAnim)) TObjectPtr<UWidgetAnimation> StaminaBumpAnim;
+	
+	UPROPERTY(Transient, meta=(BindWidgetAnim)) TObjectPtr<UWidgetAnimation> IntelligenceRedGlowAnim;
+	UPROPERTY(Transient, meta=(BindWidgetAnim)) TObjectPtr<UWidgetAnimation> CharmRedGlowAnim;
+	UPROPERTY(Transient, meta=(BindWidgetAnim)) TObjectPtr<UWidgetAnimation> StaminaRedGlowAnim;
+	
 	UPROPERTY(BlueprintReadOnly)
 	int32 LastPickedIndex = 0;
+	
+	bool bStatsInitialized = false;
+	int32 LastInt = 0;
+	int32 LastCharm = 0;
+	int32 LastStamina = 0;
 	
 	UPROPERTY(BlueprintAssignable) FOnDialogueChoiceClicked OnChoiceClicked;
 	UPROPERTY(BlueprintAssignable) FOnDialogueTransitionFinished OnTransitionFinished;
