@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "MaskPlayerController.h"
@@ -22,9 +22,9 @@ void AMaskPlayerController::BeginPlay()
 	
 	DialogueWidget->MaxIntelligence = MaxIntelligence;
 	DialogueWidget->MaxCharm = MaxCharm;
-	DialogueWidget->MaxEnergy = MaxEnergy;
+	DialogueWidget->MaxStamina = MaxStamina;
 	
-	DialogueWidget->SetStats(Intelligence, Charm, Energy);
+	DialogueWidget->SetStats(Intelligence, Charm, Stamina);
 	
 	ShowRandomEvent();
 	DialogueWidget->PlayEventIn();
@@ -53,7 +53,7 @@ void AMaskPlayerController::ShuffleEvent(TArray<FName>& RowNameList)
 	int32 Num = GameI->RandomRowNames.Num();
 	for (int32 i = Num - 1; i > 0; --i)
 	{
-		// Ëæ»úÑ¡Ò»¸öÎ»ÖÃ½øÐÐ½»»»
+		// ï¿½ï¿½ï¿½Ñ¡Ò»ï¿½ï¿½Î»ï¿½Ã½ï¿½ï¿½Ð½ï¿½ï¿½ï¿½
 		int32 j = FMath::RandRange(0, i);
 		GameI->RandomRowNames.Swap(i, j);
 	}
@@ -84,10 +84,10 @@ void AMaskPlayerController::HandleUITransitionFinished()
 	const FChoice& Delta = (PendingChoiceIndex == 0) ? CurrentEvent.LeftModify : CurrentEvent.RightModify;
 
 	Intelligence = FMath::Clamp(Intelligence + Delta.Intelligence, 0, MaxIntelligence);
-	Charm        = FMath::Clamp(Charm + Delta.Charm, 0, MaxCharm);
-	Energy       = FMath::Clamp(Energy + Delta.Stamina, 0, MaxEnergy);
+	Charm = FMath::Clamp(Charm + Delta.Charm, 0, MaxCharm);
+	Stamina = FMath::Clamp(Stamina + Delta.Stamina, 0, MaxStamina);
 
-	DialogueWidget->SetStats(Intelligence, Charm, Energy);
+	DialogueWidget->SetStats(Intelligence, Charm, Stamina);
 	
 	ShowRandomEvent();
 	DialogueWidget->PlayEventIn();

@@ -45,7 +45,7 @@ public:
 	int32 MaxCharm = 100;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 MaxEnergy = 100;
+	int32 MaxStamina = 100;
 	
 protected:
 	virtual void BeginPlay() override;
@@ -65,9 +65,9 @@ private:
 	UFUNCTION()
 	void ShowRandomEvent();
 	
-	int32 Intelligence = 30;
-	int32 Charm = 40;
-	int32 Energy = 50;
+	int32 Intelligence = 50;
+	int32 Charm = 50;
+	int32 Stamina = 50;
 	
 	FTableItemList CurrentEvent;
 	
