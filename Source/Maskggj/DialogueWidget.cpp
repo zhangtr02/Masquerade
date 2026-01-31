@@ -23,7 +23,8 @@ void UDialogueWidget::NativeOnInitialized()
 	}
 	
 	if (BackgroundImage) BackgroundImage->SetVisibility(ESlateVisibility::HitTestInvisible);
-	if (PortraitImage) PortraitImage->SetVisibility(ESlateVisibility::HitTestInvisible);
+	if (PortraitFrontImage) PortraitFrontImage->SetVisibility(ESlateVisibility::HitTestInvisible);
+	if (PortraitBackImage) PortraitBackImage->SetVisibility(ESlateVisibility::Hidden);
 	
 	if (IntelligenceBar) IntelligenceBar->SetVisibility(ESlateVisibility::HitTestInvisible);
 	if (CharmBar)        CharmBar->SetVisibility(ESlateVisibility::HitTestInvisible);

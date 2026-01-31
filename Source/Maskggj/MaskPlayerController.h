@@ -48,9 +48,9 @@ private:
 	UFUNCTION()
 	void ShowRandomEvent();
 	
-	int32 Intelligence = 0;
-	int32 Charm = 0;
-	int32 Energy = 0;
+	int32 Intelligence = 30;
+	int32 Charm = 40;
+	int32 Energy = 50;
 	
 	FTableItemList CurrentEvent;
 	
@@ -62,6 +62,6 @@ private:
 		Idle,
 		WaitingExit
 	};
-
+	
 	EFlowStage FlowStage = EFlowStage::Idle;
 };
