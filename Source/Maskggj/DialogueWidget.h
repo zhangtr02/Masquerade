@@ -55,7 +55,7 @@ public:
 	UPROPERTY(meta=(BindWidget)) TObjectPtr<UWidget> PortraitOverlay;
 	
 	UPROPERTY(Transient, meta=(BindWidgetAnim)) TObjectPtr<UWidgetAnimation> EventInAnim;
-	UPROPERTY(Transient, meta=(BindWidgetAnim)) TObjectPtr<UWidgetAnimation> EventOutAnim; 
+	UPROPERTY(Transient, meta=(BindWidgetAnim)) TObjectPtr<UWidgetAnimation> EventOutAnim;
 	
 	UPROPERTY(Transient, meta=(BindWidgetAnim)) TObjectPtr<UWidgetAnimation> LeftChoiceOutAnim;
 	UPROPERTY(Transient, meta=(BindWidgetAnim)) TObjectPtr<UWidgetAnimation> RightChoiceOutAnim;
@@ -81,7 +81,6 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void SetChoicesEnabled(bool bEnabled);
-
 	UFUNCTION(BlueprintCallable)
 	void ChangeImage(UTexture2D* Img);
 	

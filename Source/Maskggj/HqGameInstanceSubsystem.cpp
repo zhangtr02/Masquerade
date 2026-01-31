@@ -49,20 +49,6 @@ void UHqGameInstanceSubsystem::LoadConfig(const UDataTable* Table)
 		else {
 			UE_LOG(LogTemp, Warning, TEXT("[LRY] Row [%s]: Portrait field is EMPTY in DataTable."), *CurrentRowName.ToString());
 		}
-
-		// --- 2. 处理 PortraitMask ---
-		if (!RowPtrs[i]->PortraitMask.IsNull())
-		{
-			UTexture2D* LoadedTextureMask = RowPtrs[i]->PortraitMask.LoadSynchronous();
-			if (LoadedTextureMask)
-			{
-				FName MaskName = FName(*(CurrentRowName.ToString() + TEXT("_mask")));
-				ImageCache.Add(MaskName, LoadedTextureMask);
-				UE_LOG(LogTemp, Log, TEXT("[LRY] Loaded Mask for Row [%s] as [%s]"), *CurrentRowName.ToString(), *MaskName.ToString());
-			}
-		}
-
-		// --- 3. 处理 Sound ---
 		if (!RowPtrs[i]->Sound.IsNull())
 		{
 			USoundBase* LoadedSound = RowPtrs[i]->Sound.LoadSynchronous();
@@ -81,40 +67,3 @@ void UHqGameInstanceSubsystem::LoadConfig(const UDataTable* Table)
 	UE_LOG(LogTemp, Warning, TEXT("[LRY] LoadConfig Finished. ImageCache: %d, SoundCache: %d"),
 		ImageCache.Num(), SoundCache.Num());
 }
-//void UHqGameInstanceSubsystem::LoadConfig(const UDataTable* Table)
-//{
-//	if (!Table)
-//	{
-//		UE_LOG(LogTemp, Error, TEXT("[lry] LoadConfig Failed: DataTable is NULL!"));
-//		return;
-//	}
-//	TArray<FFnameToLocation*> RowPtrs;
-//	static const FString ContextString(TEXT("[lry] Full Table Load"));
-//	Table->GetAllRows<FFnameToLocation>(ContextString, RowPtrs);
-//	TArray<FName> RowNames = Table->GetRowNames();
-//
-//	for (int32 i = 0; i < RowNames.Num(); ++i)
-//	{
-//		if (RowPtrs.IsValidIndex(i))
-//		{
-//			if (RowPtrs[i]->Portrait != NULL) {
-//				TSoftObjectPtr<UTexture2D> Img = RowPtrs[i]->Portrait;
-//				UTexture2D* LoadedTexture = Img.LoadSynchronous();
-//				ImageCache.Add(RowNames[i], LoadedTexture);
-//			}
-//			else if (RowPtrs[i]->PortraitMask != NULL) {
-//				TSoftObjectPtr<UTexture2D> ImgMask = RowPtrs[i]->PortraitMask;
-//				UTexture2D* LoadedTextureMask = ImgMask.LoadSynchronous();
-//				FName MaskName = FName(*(RowNames[i].ToString() + TEXT("_mask")));
-//				ImageCache.Add(RowNames[i], LoadedTextureMask);
-//			}
-//			else if (RowPtrs[i]->Sound != NULL) {
-//				USoundBase* LoadedSound = RowPtrs[i]->Sound.LoadSynchronous();
-//				if (LoadedSound)
-//				{
-//					SoundCache.Add(RowNames[i], LoadedSound);
-//				}
-//			}
-//		}
-//	}
-//}

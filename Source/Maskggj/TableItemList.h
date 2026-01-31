@@ -61,7 +61,19 @@ struct FFnameToLocation : public FTableRowBase
 	TSoftObjectPtr<UTexture2D> Portrait; // 软引用图片
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSoftObjectPtr<UTexture2D> PortraitMask; // 软引用图片
+	TSoftObjectPtr<USoundBase> Sound;
+};
+
+USTRUCT(BlueprintType)
+struct FEndItem : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FText EndStory;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSoftObjectPtr<UTexture2D> Image; // 软引用图片
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSoftObjectPtr<USoundBase> Sound;

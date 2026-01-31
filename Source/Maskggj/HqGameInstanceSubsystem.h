@@ -20,14 +20,6 @@ public:
     TArray<FName> RandomRowNames;
 
     UPROPERTY()
-    TArray<FName> ChracterARowNames;
-    UPROPERTY()
-    TArray<FName> ChracterBRowNames;
-
-    UPROPERTY()
-    TArray<FName> ChracterCRowNames;
-
-    UPROPERTY()
     TMap<FName, UTexture2D*> ImageCache;
 
     TMap<FName, USoundBase*> SoundCache;

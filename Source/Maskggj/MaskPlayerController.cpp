@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "MaskPlayerController.h"
@@ -41,29 +41,51 @@ void AMaskPlayerController::InitialTable()
 	{
 		UE_LOG(LogTemp, Log, TEXT("[LRY]instance begin read table"));
 		GameI->LoadConfig(AssetConfig);
+
 		GameI->RandomRowNames = RandomTable->GetRowNames();
-		RandomMax = GameI->RandomRowNames.Num();
-		ShuffleEvent(GameI->RandomRowNames);
-		GameI->ChracterARowNames = CharacterATable->GetRowNames();
+		//存储表格rowname的引用
+		CurrentRowNames = &GameI->RandomRowNames;
+		ShuffleThreeStage(*CurrentRowNames);
 	}
 }
 
-void AMaskPlayerController::ShuffleEvent(TArray<FName>& RowNameList)
+void AMaskPlayerController::ShuffleThreeStage(TArray<FName>& RowNameList) {
+	// 第一段：从 0 到 SectionSize
+	ShuffleEvent(RowNameList, ShuffleSettings.Random1_start, ShuffleSettings.Random1_end);
+
+	// 第二段：从 SectionSize 到 SectionSize * 2
+	ShuffleEvent(RowNameList, ShuffleSettings.Random2_start, ShuffleSettings.Random2_end);
+
+	// 第三段：从 SectionSize * 2 到最后
+	ShuffleEvent(RowNameList, ShuffleSettings.Random3_start, ShuffleSettings.Random3_end);
+
+	UE_LOG(LogTemp, Log, TEXT("[LRY] Three-section shuffle complete. Sections: [0-%d], [%d-%d], [%d-%d]"),
+		ShuffleSettings.Random1_start, ShuffleSettings.Random1_end,
+		ShuffleSettings.Random2_start, ShuffleSettings.Random2_end,
+		ShuffleSettings.Random3_start, ShuffleSettings.Random3_end);
+}
+
+void AMaskPlayerController::ShuffleEvent(TArray<FName>& RowNameList, int32 StartIndex, int32 EndIndex)
 {
-	int32 Num = GameI->RandomRowNames.Num();
-	for (int32 i = Num - 1; i > 0; --i)
+	if (!RowNameList.IsValidIndex(StartIndex) || EndIndex <= StartIndex || EndIndex > RowNameList.Num())
 	{
-		// ���ѡһ��λ�ý��н���
-		int32 j = FMath::RandRange(0, i);
-		GameI->RandomRowNames.Swap(i, j);
+		return;
+	}
+
+	for (int32 i = EndIndex - 1; i > StartIndex; --i)
+	{
+		int32 j = FMath::RandRange(StartIndex, i);
+		RowNameList.Swap(i, j);
 	}
 }
 
 void AMaskPlayerController::HandleChoiceClicked(int32 ChoiceIndex)
 {
 	if (!DialogueWidget || bWaitingTransition) return;
-	if (RandomIndex >= RandomMax) {
-		UE_LOG(LogTemp, Warning, TEXT("[LRY] All random events have been shown."));
+
+	if (!CurrentRowNames->IsValidIndex(RandomIndex))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[LRY] All story events of this table have been shown."));
 		return;
 	}
 
@@ -101,8 +123,7 @@ void AMaskPlayerController::ShowRandomEvent()
 {
 	if (!DialogueWidget) return;
 
-	TArray<FName>& RowNamesRef = GameI->RandomRowNames;
-	FName RowName = RowNamesRef[RandomIndex++];
+	FName RowName = (*CurrentRowNames)[RandomIndex++];
 
 	const FTableItemList* Row = RandomTable->FindRow<FTableItemList>(RowName, TEXT("PickRandomEvent"));
 	if (!Row)

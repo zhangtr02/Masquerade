@@ -10,29 +10,45 @@
 
 class UDialogueWidget;
 
-/**
- * 
- */
+USTRUCT(BlueprintType)
+struct FShuffleConfig
+{
+	GENERATED_BODY()
+
+	// 每一段想要抽取的行数
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Random1_start = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Random1_end = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Random2_start = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Random2_end = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Random3_start = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Random3_end = 0;
+};
+
 UCLASS()
 class MASKGGJ_API AMaskPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 public:
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FShuffleConfig ShuffleSettings;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UDataTable> RandomTable;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TObjectPtr<UDataTable> CharacterATable;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TObjectPtr<UDataTable> CharacterBTable;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TObjectPtr<UDataTable> CharacterCTable;
-
-	//��Դ��ַ
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	//存储位置
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UDataTable> AssetConfig;
 	
 	UPROPERTY(EditAnywhere)
@@ -53,6 +69,7 @@ protected:
 private:
 
 	UHqGameInstanceSubsystem* GameI;
+	TArray<FName>* CurrentRowNames;
 	UPROPERTY()
 	TObjectPtr<UDialogueWidget> DialogueWidget;
 	
@@ -82,10 +99,12 @@ private:
 
 	EFlowStage FlowStage = EFlowStage::Idle;
 	int32 RandomIndex = 0;
-	int32 RandomMax = 0;
 
 	UFUNCTION()
 	void InitialTable();
+	
+	void ShuffleEvent(TArray<FName>& RowNameList, int32 StartIndex, int32 EndIndex);
+
 	UFUNCTION()
-	void ShuffleEvent(TArray<FName>& RowNameList);
+	void ShuffleThreeStage(TArray<FName>& RowNameList);
 };
