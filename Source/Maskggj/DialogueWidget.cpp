@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "DialogueWidget.h"
@@ -23,11 +23,11 @@ void UDialogueWidget::NativeOnInitialized()
 	}
 	
 	if (BackgroundImage) BackgroundImage->SetVisibility(ESlateVisibility::HitTestInvisible);
-	if (PortraitImage) PortraitImage->SetVisibility(ESlateVisibility::HitTestInvisible);
+	if (PortraitImage) PortraitImage->SetVisibility(ESlateVisibility::Hidden);
 	
 	if (IntelligenceBar) IntelligenceBar->SetVisibility(ESlateVisibility::HitTestInvisible);
 	if (CharmBar)        CharmBar->SetVisibility(ESlateVisibility::HitTestInvisible);
-	if (EnergyBar)       EnergyBar->SetVisibility(ESlateVisibility::HitTestInvisible);
+	if (StaminaBar)       StaminaBar->SetVisibility(ESlateVisibility::HitTestInvisible);
 }
 
 static void BindAnimOnce(UUserWidget* Widget, UWidgetAnimation* Anim, bool& bBound, const FName FuncName)
@@ -42,9 +42,15 @@ static void BindAnimOnce(UUserWidget* Widget, UWidgetAnimation* Anim, bool& bBou
 
 void UDialogueWidget::ChangeImage(UTexture2D* Img)
 {
+	if (!PortraitImage) return;
 	if (IsValid(Img)) {
 		PortraitImage->SetBrushFromTexture(Img);
 	}
+}
+
+void UDialogueWidget::SetVisible()
+{
+	PortraitImage->SetVisibility(ESlateVisibility::HitTestInvisible);
 }
 
 void UDialogueWidget::SetEvent(const FText& BottomText, const FText& LeftText, const FText& RightText)
@@ -71,7 +77,7 @@ float UDialogueWidget::ToPercent(int32 Value, int32 MaxValue)
 	return FMath::Clamp(static_cast<float>(Value) / static_cast<float>(MaxValue), 0.f, 1.f);
 }
 
-void UDialogueWidget::SetStats(int32 Intelligence, int32 Charm, int32 Energy)
+void UDialogueWidget::SetStats(int32 Intelligence, int32 Charm, int32 Stamina)
 {
 	if (IntelligenceBar)
 	{
@@ -81,9 +87,9 @@ void UDialogueWidget::SetStats(int32 Intelligence, int32 Charm, int32 Energy)
 	{
 		CharmBar->SetPercent(ToPercent(Charm, MaxCharm));
 	}
-	if (EnergyBar)
+	if (StaminaBar)
 	{
-		EnergyBar->SetPercent(ToPercent(Energy, MaxEnergy));
+		StaminaBar->SetPercent(ToPercent(Stamina, MaxStamina));
 	}
 }
 
@@ -93,16 +99,33 @@ void UDialogueWidget::PlayEventIn(float StartAtTime)
 	CurrentStage = EDialogueAnimStage::EventIn;
 	PendingFinishCount = 0;
 	
-	if (!EventInAnim)
+	if (EventInAnim)
+	{
+		PlayAnimation(EventInAnim, StartAtTime, 1, EUMGSequencePlayMode::Forward, 1.f);
+		BindAnimOnce(this, EventInAnim, bEventInBound, FName("OnAnimFinished"));
+		PendingFinishCount++;
+	}
+	
+	const int32 UnpickedIndex = 1 - LastPickedIndex;
+	UWidgetAnimation* PortraitIn = (UnpickedIndex == 0) ? PortraitLeftInAnim : PortraitRightInAnim;
+
+	if (PortraitIn)
+	{
+		PlayAnimation(PortraitIn, StartAtTime, 1, EUMGSequencePlayMode::Forward, 1.f);
+		
+		if (PortraitIn == PortraitLeftInAnim)
+			BindAnimOnce(this, PortraitLeftInAnim, bPortraitLeftInBound, FName("OnAnimFinished"));
+		else
+			BindAnimOnce(this, PortraitRightInAnim, bPortraitRightInBound, FName("OnAnimFinished"));
+
+		PendingFinishCount++;
+	}
+
+	if (PendingFinishCount == 0)
 	{
 		SetChoicesEnabled(true);
 		OnTransitionFinished.Broadcast();
-		return;
 	}
-	
-	PlayAnimation(EventInAnim, StartAtTime, 1, EUMGSequencePlayMode::Forward, 1.f);
-	BindAnimOnce(this, EventInAnim, bEventInBound, FName("OnAnimFinished"));
-	PendingFinishCount = 1;
 }
 
 void UDialogueWidget::PlayEventOut(int32 PickedIndex, float StartAtTime)
@@ -111,10 +134,25 @@ void UDialogueWidget::PlayEventOut(int32 PickedIndex, float StartAtTime)
 	CurrentStage = EDialogueAnimStage::EventOut;
 	PendingFinishCount = 0;
 	
+	LastPickedIndex = PickedIndex;
+	
 	if (EventOutAnim)
 	{
 		PlayAnimation(EventOutAnim, StartAtTime, 1, EUMGSequencePlayMode::Forward, 1.f);
 		BindAnimOnce(this, EventOutAnim, bEventOutBound, FName("OnAnimFinished"));
+		PendingFinishCount++;
+	}
+	
+	UWidgetAnimation* PortraitOut = (PickedIndex == 0) ? PortraitLeftOutAnim : PortraitRightOutAnim;
+	if (PortraitOut)
+	{
+		PlayAnimation(PortraitOut, StartAtTime, 1, EUMGSequencePlayMode::Forward, 1.f);
+
+		if (PortraitOut == PortraitLeftOutAnim)
+			BindAnimOnce(this, PortraitLeftOutAnim, bPortraitLeftOutBound, FName("OnAnimFinished"));
+		else
+			BindAnimOnce(this, PortraitRightOutAnim, bPortraitRightOutBound, FName("OnAnimFinished"));
+
 		PendingFinishCount++;
 	}
 	

@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -44,10 +44,10 @@ public:
 	
 	UPROPERTY(meta=(BindWidget)) TObjectPtr<UTextBlock> IntelligenceText;
 	UPROPERTY(meta=(BindWidget)) TObjectPtr<UTextBlock> CharmText;
-	UPROPERTY(meta=(BindWidget)) TObjectPtr<UTextBlock> EnergyText;
+	UPROPERTY(meta=(BindWidget)) TObjectPtr<UTextBlock> StaminaText;
 	UPROPERTY(meta=(BindWidget)) TObjectPtr<UProgressBar> IntelligenceBar;
 	UPROPERTY(meta=(BindWidget)) TObjectPtr<UProgressBar> CharmBar;
-	UPROPERTY(meta=(BindWidget)) TObjectPtr<UProgressBar> EnergyBar;
+	UPROPERTY(meta=(BindWidget)) TObjectPtr<UProgressBar> StaminaBar;
 	
 	UPROPERTY(meta=(BindWidget)) TObjectPtr<UWidget> EventOverlay;
 	UPROPERTY(meta=(BindWidget)) TObjectPtr<UWidget> LeftChoiceOverlay;
@@ -60,18 +60,26 @@ public:
 	UPROPERTY(Transient, meta=(BindWidgetAnim)) TObjectPtr<UWidgetAnimation> LeftChoiceOutAnim;
 	UPROPERTY(Transient, meta=(BindWidgetAnim)) TObjectPtr<UWidgetAnimation> RightChoiceOutAnim;
 	
+	UPROPERTY(Transient, meta=(BindWidgetAnim)) TObjectPtr<UWidgetAnimation> PortraitLeftOutAnim;
+	UPROPERTY(Transient, meta=(BindWidgetAnim)) TObjectPtr<UWidgetAnimation> PortraitRightOutAnim;
+	UPROPERTY(Transient, meta=(BindWidgetAnim)) TObjectPtr<UWidgetAnimation> PortraitLeftInAnim;
+	UPROPERTY(Transient, meta=(BindWidgetAnim)) TObjectPtr<UWidgetAnimation> PortraitRightInAnim;
+	
+	UPROPERTY(BlueprintReadOnly)
+	int32 LastPickedIndex = 0;
+	
 	UPROPERTY(BlueprintAssignable) FOnDialogueChoiceClicked OnChoiceClicked;
 	UPROPERTY(BlueprintAssignable) FOnDialogueTransitionFinished OnTransitionFinished;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) int32 MaxIntelligence = 100;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) int32 MaxCharm = 100;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite) int32 MaxEnergy = 100;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) int32 MaxStamina = 100;
 	
 	UFUNCTION(BlueprintCallable)
 	void SetEvent(const FText& BottomText, const FText& LeftText, const FText& RightText);
 	
 	UFUNCTION(BlueprintCallable)
-	void SetStats(int32 Intelligence, int32 Charm, int32 Energy);
+	void SetStats(int32 Intelligence, int32 Charm, int32 Stamina);
 	
 	UFUNCTION(BlueprintCallable)
 	void PlayEventIn(float StartAtTime = 0.f);
@@ -83,6 +91,8 @@ public:
 	void SetChoicesEnabled(bool bEnabled);
 	UFUNCTION(BlueprintCallable)
 	void ChangeImage(UTexture2D* Img);
+	UFUNCTION(BlueprintCallable)
+	void SetVisible();
 	
 protected:
 	virtual void NativeOnInitialized() override;
@@ -105,4 +115,8 @@ private:
 	bool bEventOutBound = false;
 	bool bLeftOutBound = false;
 	bool bRightOutBound = false;
+	bool bPortraitLeftOutBound = false;
+	bool bPortraitRightOutBound = false;
+	bool bPortraitLeftInBound = false;
+	bool bPortraitRightInBound = false;
 };

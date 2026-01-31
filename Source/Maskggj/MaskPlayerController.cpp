@@ -22,9 +22,9 @@ void AMaskPlayerController::BeginPlay()
 	
 	DialogueWidget->MaxIntelligence = MaxIntelligence;
 	DialogueWidget->MaxCharm = MaxCharm;
-	DialogueWidget->MaxEnergy = MaxEnergy;
+	DialogueWidget->MaxStamina = MaxStamina;
 	
-	DialogueWidget->SetStats(Intelligence, Charm, Energy);
+	DialogueWidget->SetStats(Intelligence, Charm, Stamina);
 	
 	ShowRandomEvent();
 	DialogueWidget->PlayEventIn();
@@ -43,20 +43,18 @@ void AMaskPlayerController::InitialTable()
 		GameI->LoadConfig(AssetConfig);
 
 		GameI->RandomRowNames = RandomTable->GetRowNames();
-		//存储表格rowname的引用
+		//存储表格rowname的指针
 		CurrentRowNames = &GameI->RandomRowNames;
 		ShuffleThreeStage(*CurrentRowNames);
 	}
 }
 
 void AMaskPlayerController::ShuffleThreeStage(TArray<FName>& RowNameList) {
-	// 第一段：从 0 到 SectionSize
+
 	ShuffleEvent(RowNameList, ShuffleSettings.Random1_start, ShuffleSettings.Random1_end);
 
-	// 第二段：从 SectionSize 到 SectionSize * 2
 	ShuffleEvent(RowNameList, ShuffleSettings.Random2_start, ShuffleSettings.Random2_end);
 
-	// 第三段：从 SectionSize * 2 到最后
 	ShuffleEvent(RowNameList, ShuffleSettings.Random3_start, ShuffleSettings.Random3_end);
 
 	UE_LOG(LogTemp, Log, TEXT("[LRY] Three-section shuffle complete. Sections: [0-%d], [%d-%d], [%d-%d]"),
@@ -88,7 +86,10 @@ void AMaskPlayerController::HandleChoiceClicked(int32 ChoiceIndex)
 		UE_LOG(LogTemp, Warning, TEXT("[LRY] All story events of this table have been shown."));
 		return;
 	}
-
+	if (RandomIndex == ShuffleSettings.Random1_start)
+	{
+		DialogueWidget->SetVisible(); // 调用你 UW 的接口
+	}
 	bWaitingTransition = true;
 	PendingChoiceIndex = ChoiceIndex;
 
@@ -106,10 +107,10 @@ void AMaskPlayerController::HandleUITransitionFinished()
 	const FChoice& Delta = (PendingChoiceIndex == 0) ? CurrentEvent.LeftModify : CurrentEvent.RightModify;
 
 	Intelligence = FMath::Clamp(Intelligence + Delta.Intelligence, 0, MaxIntelligence);
-	Charm        = FMath::Clamp(Charm + Delta.Charm, 0, MaxCharm);
-	Energy       = FMath::Clamp(Energy + Delta.Stamina, 0, MaxEnergy);
+	Charm = FMath::Clamp(Charm + Delta.Charm, 0, MaxCharm);
+	Stamina = FMath::Clamp(Stamina + Delta.Stamina, 0, MaxStamina);
 
-	DialogueWidget->SetStats(Intelligence, Charm, Energy);
+	DialogueWidget->SetStats(Intelligence, Charm, Stamina);
 	
 	ShowRandomEvent();
 	DialogueWidget->PlayEventIn();
@@ -149,6 +150,7 @@ void AMaskPlayerController::ShowRandomEvent()
 	}
 	else
 	{
+		DialogueWidget->ChangeImage(CachedImg);
 		UE_LOG(LogTemp, Warning, TEXT("[LRY] No cached image found for character [%s]. Check your LoadConfig or DataTable."), *Row->Character.ToString());
 	}
 }
