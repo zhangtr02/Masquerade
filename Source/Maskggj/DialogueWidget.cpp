@@ -22,23 +22,25 @@ void UDialogueWidget::NativeOnInitialized()
 		RightChoiceButton->OnClicked.AddDynamic(this, &UDialogueWidget::OnRightChoiceButtonClicked);
 	}
 	
-	SetImage(BackgroundImage);
-	SetImage(PortraitImage);
+	if (BackgroundImage) BackgroundImage->SetVisibility(ESlateVisibility::HitTestInvisible);
+	if (PortraitImage) PortraitImage->SetVisibility(ESlateVisibility::HitTestInvisible);
 	
 	if (IntelligenceBar) IntelligenceBar->SetVisibility(ESlateVisibility::HitTestInvisible);
 	if (CharmBar)        CharmBar->SetVisibility(ESlateVisibility::HitTestInvisible);
 	if (EnergyBar)       EnergyBar->SetVisibility(ESlateVisibility::HitTestInvisible);
 }
 
-void UDialogueWidget::SetImage(UImage* Image)
+static void BindAnimOnce(UUserWidget* Widget, UWidgetAnimation* Anim, bool& bBound, const FName FuncName)
 {
-	if (IsValid(Image))
-	{
-		Image->SetVisibility(ESlateVisibility::HitTestInvisible);
-	}
+	if (!Widget || !Anim || bBound) return;
+
+	FWidgetAnimationDynamicEvent FinishedEvent;
+	FinishedEvent.BindUFunction(Widget, FuncName);
+	Widget->BindToAnimationFinished(Anim, FinishedEvent);
+	bBound = true;
 }
 
-void UDialogueWidget::SetEventText(const FText& BottomText, const FText& LeftText, const FText& RightText)
+void UDialogueWidget::SetEvent(const FText& BottomText, const FText& LeftText, const FText& RightText)
 {
 	if (EventText)
 	{
@@ -52,6 +54,8 @@ void UDialogueWidget::SetEventText(const FText& BottomText, const FText& LeftTex
 	{
 		RightChoiceText->SetText(RightText);
 	}
+	
+	SetChoicesEnabled(true);
 }
 
 float UDialogueWidget::ToPercent(int32 Value, int32 MaxValue)
@@ -76,6 +80,66 @@ void UDialogueWidget::SetStats(int32 Intelligence, int32 Charm, int32 Energy)
 	}
 }
 
+void UDialogueWidget::PlayEventIn(float StartAtTime)
+{
+	SetChoicesEnabled(false);
+	CurrentStage = EDialogueAnimStage::EventIn;
+	PendingFinishCount = 0;
+	
+	if (!EventInAnim)
+	{
+		SetChoicesEnabled(true);
+		OnTransitionFinished.Broadcast();
+		return;
+	}
+	
+	PlayAnimation(EventInAnim, StartAtTime, 1, EUMGSequencePlayMode::Forward, 1.f);
+	BindAnimOnce(this, EventInAnim, bEventInBound, FName("OnAnimFinished"));
+	PendingFinishCount = 1;
+}
+
+void UDialogueWidget::PlayEventOut(int32 PickedIndex, float StartAtTime)
+{
+	SetChoicesEnabled(false);
+	CurrentStage = EDialogueAnimStage::EventOut;
+	PendingFinishCount = 0;
+	
+	if (EventOutAnim)
+	{
+		PlayAnimation(EventOutAnim, StartAtTime, 1, EUMGSequencePlayMode::Forward, 1.f);
+		BindAnimOnce(this, EventOutAnim, bEventOutBound, FName("OnAnimFinished"));
+		PendingFinishCount++;
+	}
+	
+	UWidgetAnimation* UnselectedOut = (PickedIndex == 0) ? RightChoiceOutAnim : LeftChoiceOutAnim;
+	if (UnselectedOut)
+	{
+		PlayAnimation(UnselectedOut, StartAtTime, 1, EUMGSequencePlayMode::Forward, 1.f);
+
+		if (UnselectedOut == LeftChoiceOutAnim)
+		{
+			BindAnimOnce(this, LeftChoiceOutAnim, bLeftOutBound, FName("OnAnimFinished"));
+		}
+		else
+		{
+			BindAnimOnce(this, RightChoiceOutAnim, bRightOutBound, FName("OnAnimFinished"));
+		}
+
+		PendingFinishCount++;
+	}
+	
+	if (PendingFinishCount == 0)
+	{
+		OnTransitionFinished.Broadcast();
+	}
+}
+
+void UDialogueWidget::SetChoicesEnabled(bool bEnabled)
+{
+	if (LeftChoiceButton)  LeftChoiceButton->SetIsEnabled(bEnabled);
+	if (RightChoiceButton) RightChoiceButton->SetIsEnabled(bEnabled);
+}
+
 void UDialogueWidget::OnLeftChoiceButtonClicked()
 {
 	OnChoiceClicked.Broadcast(0);
@@ -84,4 +148,18 @@ void UDialogueWidget::OnLeftChoiceButtonClicked()
 void UDialogueWidget::OnRightChoiceButtonClicked()
 {
 	OnChoiceClicked.Broadcast(1);
+}
+
+void UDialogueWidget::OnAnimFinished()
+{
+	PendingFinishCount = FMath::Max(0, PendingFinishCount - 1);
+
+	if (PendingFinishCount == 0)
+	{
+		if (CurrentStage == EDialogueAnimStage::EventIn)
+		{
+			SetChoicesEnabled(true);
+		}
+		OnTransitionFinished.Broadcast();
+	}
 }

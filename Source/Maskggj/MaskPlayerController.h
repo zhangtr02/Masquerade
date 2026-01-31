@@ -43,6 +43,9 @@ private:
 	void HandleChoiceClicked(int32 ChoiceIndex);
 	
 	UFUNCTION()
+	void HandleUITransitionFinished();
+	
+	UFUNCTION()
 	void ShowRandomEvent();
 	
 	int32 Intelligence = 0;
@@ -50,4 +53,15 @@ private:
 	int32 Energy = 0;
 	
 	FTableItemList CurrentEvent;
+	
+	bool bWaitingTransition = false;
+	int32 PendingChoiceIndex = -1;
+
+	enum class EFlowStage : uint8
+	{
+		Idle,
+		WaitingExit
+	};
+
+	EFlowStage FlowStage = EFlowStage::Idle;
 };

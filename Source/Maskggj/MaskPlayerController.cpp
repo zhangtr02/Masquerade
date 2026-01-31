@@ -17,6 +17,7 @@ void AMaskPlayerController::BeginPlay()
 	DialogueWidget->AddToViewport(10);
 	
 	DialogueWidget->OnChoiceClicked.AddDynamic(this, &AMaskPlayerController::HandleChoiceClicked);
+	DialogueWidget->OnTransitionFinished.AddDynamic(this, &AMaskPlayerController::HandleUITransitionFinished);
 	
 	DialogueWidget->MaxIntelligence = MaxIntelligence;
 	DialogueWidget->MaxCharm = MaxCharm;
@@ -25,6 +26,7 @@ void AMaskPlayerController::BeginPlay()
 	DialogueWidget->SetStats(Intelligence, Charm, Energy);
 	
 	ShowRandomEvent();
+	DialogueWidget->PlayEventIn();
 	
 	SetShowMouseCursor(true);
 	FInputModeGameAndUI Mode;
@@ -34,17 +36,36 @@ void AMaskPlayerController::BeginPlay()
 
 void AMaskPlayerController::HandleChoiceClicked(int32 ChoiceIndex)
 {
-	const FChoice& Delta = (ChoiceIndex == 0) ? CurrentEvent.LeftModify : CurrentEvent.RightModify;
+	if (!DialogueWidget || bWaitingTransition) return;
+
+	bWaitingTransition = true;
+	PendingChoiceIndex = ChoiceIndex;
+
+	FlowStage = EFlowStage::WaitingExit;
+	
+	DialogueWidget->PlayEventOut(ChoiceIndex);
+}
+
+void AMaskPlayerController::HandleUITransitionFinished()
+{
+	if (!DialogueWidget) return;
+	
+	if (FlowStage != EFlowStage::WaitingExit) return;
+	
+	const FChoice& Delta = (PendingChoiceIndex == 0) ? CurrentEvent.LeftModify : CurrentEvent.RightModify;
+
 	Intelligence = FMath::Clamp(Intelligence + Delta.Intelligence, 0, MaxIntelligence);
 	Charm        = FMath::Clamp(Charm + Delta.Charm, 0, MaxCharm);
 	Energy       = FMath::Clamp(Energy + Delta.Stamina, 0, MaxEnergy);
-	
-	if (DialogueWidget)
-	{
-		DialogueWidget->SetStats(Intelligence, Charm, Energy);
-	}
+
+	DialogueWidget->SetStats(Intelligence, Charm, Energy);
 	
 	ShowRandomEvent();
+	DialogueWidget->PlayEventIn();
+	
+	PendingChoiceIndex = -1;
+	FlowStage = EFlowStage::Idle;
+	bWaitingTransition = false;
 }
 
 void AMaskPlayerController::ShowRandomEvent()
@@ -59,7 +80,7 @@ void AMaskPlayerController::ShowRandomEvent()
 	if (!Row) return;
 	
 	CurrentEvent = *Row;
-	DialogueWidget->SetEventText(
+	DialogueWidget->SetEvent(
 		CurrentEvent.Question,
 		CurrentEvent.LeftChoice,
 		CurrentEvent.RightChoice
