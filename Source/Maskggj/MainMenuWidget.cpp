@@ -34,6 +34,18 @@ void UMainMenuWidget::NativeConstruct()
 	{
 		CandleImage->SetVisibility(ESlateVisibility::Hidden);
 	}
+	
+	if (TitleFloatAnim)
+	{
+		// 播放并无限循环
+		PlayAnimation(TitleFloatAnim, 0.f, 0, EUMGSequencePlayMode::Forward, 1.0f);
+	}
+	
+	if (FlickAnim)
+	{
+		// 播放并无限循环
+		PlayAnimation(FlickAnim, 0.f, 0, EUMGSequencePlayMode::Forward, 1.0f);
+	}
 }
 
 void UMainMenuWidget::OnStartClicked()

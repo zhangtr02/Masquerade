@@ -23,6 +23,9 @@ public:
 	UPROPERTY(meta=(BindWidget)) TObjectPtr<UButton> StartButton;
 	UPROPERTY(meta=(BindWidget)) TObjectPtr<UButton> ExitButton;
 	
+	UPROPERTY(Transient, meta=(BindWidgetAnim)) TObjectPtr<UWidgetAnimation> TitleFloatAnim;
+	UPROPERTY(Transient, meta=(BindWidgetAnim)) TObjectPtr<UWidgetAnimation> FlickAnim;
+	
 	UPROPERTY(EditAnywhere)
 	FVector2D CandleOffset = FVector2D(-150.f, -100.f);
 	
