@@ -1,9 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "TableItemList.h"
+#include "HqGameInstanceSubsystem.h"
 #include "GameFramework/PlayerController.h"
 #include "MaskPlayerController.generated.h"
 
@@ -17,8 +18,22 @@ class MASKGGJ_API AMaskPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 public:
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TObjectPtr<UDataTable> EventTable;
+	TObjectPtr<UDataTable> RandomTable;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UDataTable> CharacterATable;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UDataTable> CharacterBTable;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UDataTable> CharacterCTable;
+
+	//��Դ��ַ
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UDataTable> AssetConfig;
 	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UDialogueWidget> DialogueWidgetClass;
@@ -36,6 +51,8 @@ protected:
 	virtual void BeginPlay() override;
 	
 private:
+
+	UHqGameInstanceSubsystem* GameI;
 	UPROPERTY()
 	TObjectPtr<UDialogueWidget> DialogueWidget;
 	
@@ -64,4 +81,11 @@ private:
 	};
 	
 	EFlowStage FlowStage = EFlowStage::Idle;
+	int32 RandomIndex = 0;
+	int32 RandomMax = 0;
+
+	UFUNCTION()
+	void InitialTable();
+	UFUNCTION()
+	void ShuffleEvent(TArray<FName>& RowNameList);
 };

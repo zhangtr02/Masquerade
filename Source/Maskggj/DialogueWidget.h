@@ -82,6 +82,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void SetChoicesEnabled(bool bEnabled);
+
+	UFUNCTION(BlueprintCallable)
+	void ChangeImage(UTexture2D* Img);
 	
 protected:
 	virtual void NativeOnInitialized() override;

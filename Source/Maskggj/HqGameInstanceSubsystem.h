@@ -14,14 +14,28 @@ UCLASS()
 class MASKGGJ_API UHqGameInstanceSubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
+    virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 public:
     UPROPERTY()
-    TMap<FName, FTableItemList> QuestionMap;
+    TArray<FName> RandomRowNames;
+
+    UPROPERTY()
+    TArray<FName> ChracterARowNames;
+    UPROPERTY()
+    TArray<FName> ChracterBRowNames;
+
+    UPROPERTY()
+    TArray<FName> ChracterCRowNames;
+
+    UPROPERTY()
+    TMap<FName, UTexture2D*> ImageCache;
+
+    TMap<FName, USoundBase*> SoundCache;
 
     // 玩家状态
     int32 Intelligence = 0;
     int32 Charm = 0;
     int32 Stamina = 100;
 
-    void LoadAllRows(const UDataTable* Table, TMap<FName, FTableItemList>& OutMap);
+    void LoadConfig(const UDataTable* Table);
 };

@@ -41,6 +41,13 @@ static void BindAnimOnce(UUserWidget* Widget, UWidgetAnimation* Anim, bool& bBou
 	bBound = true;
 }
 
+void UDialogueWidget::ChangeImage(UTexture2D* Img)
+{
+	if (IsValid(Img)) {
+		PortraitImage->SetBrushFromTexture(Img);
+	}
+}
+
 void UDialogueWidget::SetEvent(const FText& BottomText, const FText& LeftText, const FText& RightText)
 {
 	if (EventText)
