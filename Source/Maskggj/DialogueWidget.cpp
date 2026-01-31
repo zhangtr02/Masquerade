@@ -24,6 +24,7 @@ void UDialogueWidget::NativeOnInitialized()
 	
 	if (BackgroundImage) BackgroundImage->SetVisibility(ESlateVisibility::HitTestInvisible);
 	if (PortraitImage) PortraitImage->SetVisibility(ESlateVisibility::Hidden);
+	if (EventImage) EventImage->SetVisibility(ESlateVisibility::Hidden);
 	
 	if (IntelligenceBar) IntelligenceBar->SetVisibility(ESlateVisibility::HitTestInvisible);
 	if (CharmBar)        CharmBar->SetVisibility(ESlateVisibility::HitTestInvisible);
@@ -55,6 +56,7 @@ void UDialogueWidget::ChangeImage(UTexture2D* Img)
 void UDialogueWidget::SetVisible()
 {
 	PortraitImage->SetVisibility(ESlateVisibility::HitTestInvisible);
+	EventImage->SetVisibility(ESlateVisibility::HitTestInvisible);
 }
 
 void UDialogueWidget::SetEvent(const FText& BottomText, const FText& LeftText, const FText& RightText)

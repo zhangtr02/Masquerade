@@ -3,6 +3,7 @@
 
 #include "MaskPlayerController.h"
 #include "DialogueWidget.h"
+#include <Kismet/GameplayStatics.h>
 
 void AMaskPlayerController::BeginPlay()
 {
@@ -152,5 +153,20 @@ void AMaskPlayerController::ShowRandomEvent()
 	{
 		DialogueWidget->ChangeImage(CachedImg);
 		UE_LOG(LogTemp, Warning, TEXT("[LRY] No cached image found for character [%s]. Check your LoadConfig or DataTable."), *Row->Character.ToString());
+	}
+
+	if (!Row->SFX.IsNone())
+	{
+		USoundBase* Sound = GameI->SoundCache.FindRef(Row->SFX);
+		if (Sound) {
+			UGameplayStatics::PlaySound2D(GetWorld(), Sound);
+		}
+		else {
+			UE_LOG(LogTemp, Warning, TEXT("[LRY] Sound[%s] not found."), *Row->SFX.ToString())
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[LRY] Row [%s] has no sound assigned."), *RowName.ToString());
 	}
 }

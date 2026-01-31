@@ -35,6 +35,7 @@ class MASKGGJ_API UDialogueWidget : public UUserWidget
 public:
 	UPROPERTY(meta=(BindWidget)) TObjectPtr<UImage> BackgroundImage;
 	UPROPERTY(meta=(BindWidget)) TObjectPtr<UImage> PortraitImage;
+	UPROPERTY(meta = (BindWidget)) TObjectPtr<UImage> EventImage;
 	
 	UPROPERTY(meta=(BindWidget)) TObjectPtr<UTextBlock> EventText;
 	UPROPERTY(meta=(BindWidget)) TObjectPtr<UTextBlock> LeftChoiceText;
