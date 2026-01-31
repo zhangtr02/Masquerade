@@ -4,7 +4,6 @@
 #include "HqGameModeBase.h"
 #include "TableItemList.h"
 #include "EndStoryUserWidget.h"
-#include "TitleUserWidget.h"
 #include "MaskPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -16,6 +15,11 @@ void AHqGameModeBase::BeginPlay()
     PC = Cast<AMaskPlayerController>(GetWorld()->GetPlayerControllerIterator()->Get());
     PC->BGMComponent->SetSound(MainMusic);
     PC->BGMComponent->Play();
+    PC->SetShowMouseCursor(true);
+    FInputModeGameAndUI Mode;
+    Mode.SetHideCursorDuringCapture(false);
+    PC->SetInputMode(Mode);
+    
     BackToTitleUI();
     GameI = GetGameInstance()->GetSubsystem<UHqGameInstanceSubsystem>();
 
@@ -35,7 +39,6 @@ void AHqGameModeBase::PostLogin(APlayerController* NewPlayer)
 
 void AHqGameModeBase::OnStatsChangedHandler(int32 Intel, int32 Charm, int32 Stamina)
 {
-    UE_LOG(LogTemp, Warning, TEXT("[LRY] Stats Changed - Intel: %d, Charm: %d, Stamina: %d"), Intel, Charm, Stamina);
     if (!PC) return;
 
     FName EndingRowName = NAME_None;
@@ -62,7 +65,7 @@ void AHqGameModeBase::StartMainUI()
 
 void AHqGameModeBase::BackToTitleUI()
 {
-    UTitleUserWidget* TitleUI = CreateWidget<UTitleUserWidget>(PC, BeginWidgetClass);
+    UUserWidget* TitleUI = CreateWidget<UUserWidget>(PC, BeginWidgetClass);
     if (TitleUI)
     {
         TitleUI->AddToViewport(100); // 放在最前面
