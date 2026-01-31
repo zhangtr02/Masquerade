@@ -51,3 +51,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName SFX;
 };
+
+USTRUCT(BlueprintType)
+struct FFnameToLocation : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSoftObjectPtr<UTexture2D> Portrait; // 软引用图片
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSoftObjectPtr<UTexture2D> PortraitMask; // 软引用图片
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSoftObjectPtr<USoundBase> Sound;
+};
