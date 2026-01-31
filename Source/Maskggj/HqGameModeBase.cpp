@@ -4,7 +4,6 @@
 #include "HqGameModeBase.h"
 #include "TableItemList.h"
 #include "EndStoryUserWidget.h"
-#include "TitleUserWidget.h"
 #include "MaskPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -16,6 +15,11 @@ void AHqGameModeBase::BeginPlay()
     PC = Cast<AMaskPlayerController>(GetWorld()->GetPlayerControllerIterator()->Get());
     PC->BGMComponent->SetSound(MainMusic);
     PC->BGMComponent->Play();
+    PC->SetShowMouseCursor(true);
+    FInputModeGameAndUI Mode;
+    Mode.SetHideCursorDuringCapture(false);
+    PC->SetInputMode(Mode);
+    
     BackToTitleUI();
     GameI = GetGameInstance()->GetSubsystem<UHqGameInstanceSubsystem>();
 
@@ -25,8 +29,7 @@ void AHqGameModeBase::PostLogin(APlayerController* NewPlayer)
 {
     Super::PostLogin(NewPlayer);
     UE_LOG(LogTemp, Warning, TEXT("[LRY] playercontroller postlogin"));
-    PC = Cast<AMaskPlayerController>(NewPlayer);
-    if (PC)
+    if (PC == Cast<AMaskPlayerController>(NewPlayer))
     {
         UE_LOG(LogTemp, Warning, TEXT("[LRY] add dynamic on PC"));
         PC->OnStatsChanged.AddDynamic(this, &AHqGameModeBase::OnStatsChangedHandler);
@@ -35,7 +38,6 @@ void AHqGameModeBase::PostLogin(APlayerController* NewPlayer)
 
 void AHqGameModeBase::OnStatsChangedHandler(int32 Intel, int32 Charm, int32 Stamina)
 {
-    UE_LOG(LogTemp, Warning, TEXT("[LRY] Stats Changed - Intel: %d, Charm: %d, Stamina: %d"), Intel, Charm, Stamina);
     if (!PC) return;
 
     FName EndingRowName = NAME_None;
@@ -62,7 +64,7 @@ void AHqGameModeBase::StartMainUI()
 
 void AHqGameModeBase::BackToTitleUI()
 {
-    UTitleUserWidget* TitleUI = CreateWidget<UTitleUserWidget>(PC, BeginWidgetClass);
+    UUserWidget* TitleUI = CreateWidget<UUserWidget>(PC, BeginWidgetClass);
     if (TitleUI)
     {
         TitleUI->AddToViewport(100); // 放在最前面
@@ -73,7 +75,6 @@ void AHqGameModeBase::TriggerEnding(FName EndingRowName)
 {
     if (!PC || !EndingTable || !EndingWidgetClass) return;
 
-    UE_LOG(LogTemp, Warning, TEXT("[LRY] Attempting to trigger ending: %s"), *EndingRowName.ToString());
     FEndItem* Row = EndingTable->FindRow<FEndItem>(EndingRowName, TEXT("GetEnding"));
     if (Row)
     {
@@ -81,16 +82,11 @@ void AHqGameModeBase::TriggerEnding(FName EndingRowName)
         if (EndingUI)
         {
             UTexture2D* EndImg = Row->Image.LoadSynchronous();;
-            if (!EndImg) {
-                UE_LOG(LogTemp, Warning, TEXT("[LRY] Warning: Ending Image for '%s' is NULL!"), *EndingRowName.ToString());
-            }
+
             EndingUI->SetupWidget(EndImg, Row->EndStory);
             EndingUI->AddToViewport(100); // 放在最前面
 
             PC->CloseDialogueWidget();
         }
-    }
-    else {
-        UE_LOG(LogTemp, Error, TEXT("[LRY] TriggerEnding Error: Cannot find row '%s' in EndingTable!"), *EndingRowName.ToString());
     }
 }

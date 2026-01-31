@@ -21,10 +21,10 @@ public:
 	TObjectPtr<UDataTable> EndingTable;
 	// 在编辑器里指定结局 UI 的类
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-	TSubclassOf<class UEndStoryUserWidget> EndingWidgetClass;
+	TSubclassOf<class UUserWidget> EndingWidgetClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-	TSubclassOf<class UTitleUserWidget> BeginWidgetClass;
+	TSubclassOf<class UUserWidget> BeginWidgetClass;
 
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 
