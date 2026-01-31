@@ -18,6 +18,10 @@ void AMaskPlayerController::BeginPlay()
 	
 	DialogueWidget->OnChoiceClicked.AddDynamic(this, &AMaskPlayerController::HandleChoiceClicked);
 	
+	DialogueWidget->MaxIntelligence = MaxIntelligence;
+	DialogueWidget->MaxCharm = MaxCharm;
+	DialogueWidget->MaxEnergy = MaxEnergy;
+	
 	DialogueWidget->SetStats(Intelligence, Charm, Energy);
 	
 	ShowRandomEvent();
@@ -31,9 +35,9 @@ void AMaskPlayerController::BeginPlay()
 void AMaskPlayerController::HandleChoiceClicked(int32 ChoiceIndex)
 {
 	const FChoice& Delta = (ChoiceIndex == 0) ? CurrentEvent.LeftModify : CurrentEvent.RightModify;
-	Intelligence += Delta.Intelligence;
-	Charm        += Delta.Charm;
-	Energy      += Delta.Stamina;
+	Intelligence = FMath::Clamp(Intelligence + Delta.Intelligence, 0, MaxIntelligence);
+	Charm        = FMath::Clamp(Charm + Delta.Charm, 0, MaxCharm);
+	Energy       = FMath::Clamp(Energy + Delta.Stamina, 0, MaxEnergy);
 	
 	if (DialogueWidget)
 	{

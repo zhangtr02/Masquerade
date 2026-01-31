@@ -11,6 +11,7 @@ class UTextBlock;
 class UButton;
 class UTexture2D;
 class UWidget;
+class UProgressBar;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDialogueChoiceClicked, int32, ChoiceIndex);
 
@@ -44,28 +45,34 @@ public:
 	TObjectPtr<UTextBlock> RightChoiceText;
 	
 	UPROPERTY(meta=(BindWidget))
-	TObjectPtr<UImage> IntelligenceImage;
+	TObjectPtr<UTextBlock> IntelligenceText;
 	
 	UPROPERTY(meta=(BindWidget))
-	TObjectPtr<UTextBlock> IntelligenceText;
-
-	UPROPERTY(meta=(BindWidget))
-	TObjectPtr<UImage> CharmImage;
+	TObjectPtr<UProgressBar> IntelligenceBar;
 	
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTextBlock> CharmText;
 	
 	UPROPERTY(meta=(BindWidget))
-	TObjectPtr<UImage> EnergyImage;
+	TObjectPtr<UProgressBar> CharmBar;
 	
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTextBlock> EnergyText;
 	
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UProgressBar> EnergyBar;
+	
 	UPROPERTY(BlueprintAssignable)
 	FOnDialogueChoiceClicked OnChoiceClicked;
 	
-	UFUNCTION(BlueprintCallable)
-	void SetImage(UImage* Image);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 MaxIntelligence = 100;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 MaxCharm = 100;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 MaxEnergy = 100;
 	
 	UFUNCTION(BlueprintCallable)
 	void SetEventText(
@@ -87,4 +94,6 @@ private:
 	UFUNCTION()
 	void OnRightChoiceButtonClicked();
 	
+	void SetImage(UImage* Image);
+	static float ToPercent(int32 Value, int32 MaxValue);
 };

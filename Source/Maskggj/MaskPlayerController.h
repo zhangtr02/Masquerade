@@ -23,6 +23,15 @@ public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UDialogueWidget> DialogueWidgetClass;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 MaxIntelligence = 100;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 MaxCharm = 100;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 MaxEnergy = 100;
+	
 protected:
 	virtual void BeginPlay() override;
 	
