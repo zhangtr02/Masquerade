@@ -7,14 +7,19 @@
 AMaskPlayerController::AMaskPlayerController()
 {
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
-	AudioComponent->bAllowSpatialization = false;
+	AudioComponent->bAutoActivate = false;
 	BGMComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("BGMComponent"));
 	BGMComponent->bAutoActivate = false;
+	SFXComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("SFXComponent"));
+	SFXComponent->bAutoActivate = false;
 }
 
 void AMaskPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+	AudioComponent->VolumeMultiplier = AudioVolume;
+	BGMComponent->VolumeMultiplier = BGMVolume;
+	SFXComponent->VolumeMultiplier = SFXVolume;
 
 	GameI = GetGameInstance()->GetSubsystem<UHqGameInstanceSubsystem>();
 	InitialTable();

@@ -56,11 +56,24 @@ public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UDialogueWidget> DialogueWidgetClass;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio", meta = (AllowPrivateAccess = "true"))
+	//事件音
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio")
 	TObjectPtr<UAudioComponent> AudioComponent;
-
+	//点击音效等
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio")
+	TObjectPtr<UAudioComponent> SFXComponent;
+	//背景音乐
 	UPROPERTY(VisibleAnywhere, Category = "Audio")
 	TObjectPtr<UAudioComponent> BGMComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
+	float BGMVolume = 0.8f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
+	float AudioVolume = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
+	float SFXVolume = 1.0f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 MaxIntelligence = 100;
