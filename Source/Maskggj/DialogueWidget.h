@@ -43,9 +43,6 @@ public:
 	UPROPERTY(meta=(BindWidget)) TObjectPtr<UButton> LeftChoiceButton;
 	UPROPERTY(meta=(BindWidget)) TObjectPtr<UButton> RightChoiceButton;
 	
-	UPROPERTY(meta=(BindWidget)) TObjectPtr<UTextBlock> IntelligenceText;
-	UPROPERTY(meta=(BindWidget)) TObjectPtr<UTextBlock> CharmText;
-	UPROPERTY(meta=(BindWidget)) TObjectPtr<UTextBlock> StaminaText;
 	UPROPERTY(meta=(BindWidget)) TObjectPtr<UProgressBar> IntelligenceBar;
 	UPROPERTY(meta=(BindWidget)) TObjectPtr<UProgressBar> CharmBar;
 	UPROPERTY(meta=(BindWidget)) TObjectPtr<UProgressBar> StaminaBar;
