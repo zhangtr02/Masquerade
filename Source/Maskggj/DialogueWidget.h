@@ -69,8 +69,6 @@ public:
 	
 	UPROPERTY(Transient, meta=(BindWidgetAnim)) TObjectPtr<UWidgetAnimation> PortraitLeftOutAnim;
 	UPROPERTY(Transient, meta=(BindWidgetAnim)) TObjectPtr<UWidgetAnimation> PortraitRightOutAnim;
-	UPROPERTY(Transient, meta=(BindWidgetAnim)) TObjectPtr<UWidgetAnimation> PortraitLeftInAnim;
-	UPROPERTY(Transient, meta=(BindWidgetAnim)) TObjectPtr<UWidgetAnimation> PortraitRightInAnim;
 	
 	UPROPERTY(Transient, meta=(BindWidgetAnim)) TObjectPtr<UWidgetAnimation> IntelligenceBumpAnim;
 	UPROPERTY(Transient, meta=(BindWidgetAnim)) TObjectPtr<UWidgetAnimation> CharmBumpAnim;
@@ -137,6 +135,4 @@ private:
 	bool bRightOutBound = false;
 	bool bPortraitLeftOutBound = false;
 	bool bPortraitRightOutBound = false;
-	bool bPortraitLeftInBound = false;
-	bool bPortraitRightInBound = false;
 };

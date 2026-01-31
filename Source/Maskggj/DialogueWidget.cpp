@@ -32,7 +32,7 @@ void UDialogueWidget::NativeOnInitialized()
 	
 	if (IntelligenceRedGlowBar) IntelligenceRedGlowBar->SetVisibility(ESlateVisibility::HitTestInvisible);
 	if (CharmRedGlowBar) CharmRedGlowBar->SetVisibility(ESlateVisibility::HitTestInvisible);
-	if (StaminaRedGlowBar) CharmRedGlowBar->SetVisibility(ESlateVisibility::HitTestInvisible);
+	if (StaminaRedGlowBar) StaminaRedGlowBar->SetVisibility(ESlateVisibility::HitTestInvisible);
 }
 
 static void BindAnimOnce(UUserWidget* Widget, UWidgetAnimation* Anim, bool& bBound, const FName FuncName)
@@ -158,17 +158,24 @@ void UDialogueWidget::PlayEventIn(float StartAtTime)
 	}
 	
 	const int32 UnpickedIndex = 1 - LastPickedIndex;
-	UWidgetAnimation* PortraitIn = (UnpickedIndex == 0) ? PortraitLeftInAnim : PortraitRightInAnim;
-
-	if (PortraitIn)
+	UWidgetAnimation* PortraitInViaOut = nullptr;
+	bool* BoundFlag = nullptr;
+	
+	if (UnpickedIndex == 0)
 	{
-		PlayAnimation(PortraitIn, StartAtTime, 1, EUMGSequencePlayMode::Forward, 1.f);
-		
-		if (PortraitIn == PortraitLeftInAnim)
-			BindAnimOnce(this, PortraitLeftInAnim, bPortraitLeftInBound, FName("OnAnimFinished"));
-		else
-			BindAnimOnce(this, PortraitRightInAnim, bPortraitRightInBound, FName("OnAnimFinished"));
-
+		PortraitInViaOut = PortraitRightOutAnim;
+		BoundFlag = &bPortraitRightOutBound;
+	}
+	else
+	{
+		PortraitInViaOut = PortraitLeftOutAnim;
+		BoundFlag = &bPortraitLeftOutBound;
+	}
+	
+	if (PortraitInViaOut)
+	{
+		PlayAnimation(PortraitInViaOut, StartAtTime, 1, EUMGSequencePlayMode::Reverse, 1.f);
+		BindAnimOnce(this, PortraitInViaOut, *BoundFlag, FName("OnAnimFinished"));
 		PendingFinishCount++;
 	}
 
