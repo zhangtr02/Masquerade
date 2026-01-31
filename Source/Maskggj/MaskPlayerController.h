@@ -31,12 +31,21 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UDataTable> CharacterCTable;
 
-	//资源地址
+	//��Դ��ַ
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UDataTable> AssetConfig;
 	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UDialogueWidget> DialogueWidgetClass;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 MaxIntelligence = 100;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 MaxCharm = 100;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 MaxEnergy = 100;
 	
 protected:
 	virtual void BeginPlay() override;
@@ -51,6 +60,9 @@ private:
 	void HandleChoiceClicked(int32 ChoiceIndex);
 	
 	UFUNCTION()
+	void HandleUITransitionFinished();
+	
+	UFUNCTION()
 	void ShowRandomEvent();
 	
 	int32 Intelligence = 0;
@@ -58,6 +70,17 @@ private:
 	int32 Energy = 0;
 	
 	FTableItemList CurrentEvent;
+	
+	bool bWaitingTransition = false;
+	int32 PendingChoiceIndex = -1;
+
+	enum class EFlowStage : uint8
+	{
+		Idle,
+		WaitingExit
+	};
+
+	EFlowStage FlowStage = EFlowStage::Idle;
 	int32 RandomIndex = 0;
 	int32 RandomMax = 0;
 

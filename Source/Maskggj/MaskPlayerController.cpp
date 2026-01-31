@@ -18,10 +18,16 @@ void AMaskPlayerController::BeginPlay()
 	DialogueWidget->AddToViewport(10);
 	
 	DialogueWidget->OnChoiceClicked.AddDynamic(this, &AMaskPlayerController::HandleChoiceClicked);
+	DialogueWidget->OnTransitionFinished.AddDynamic(this, &AMaskPlayerController::HandleUITransitionFinished);
+	
+	DialogueWidget->MaxIntelligence = MaxIntelligence;
+	DialogueWidget->MaxCharm = MaxCharm;
+	DialogueWidget->MaxEnergy = MaxEnergy;
 	
 	DialogueWidget->SetStats(Intelligence, Charm, Energy);
 	
 	ShowRandomEvent();
+	DialogueWidget->PlayEventIn();
 	
 	SetShowMouseCursor(true);
 	FInputModeGameAndUI Mode;
@@ -55,22 +61,40 @@ void AMaskPlayerController::ShuffleEvent(TArray<FName>& RowNameList)
 
 void AMaskPlayerController::HandleChoiceClicked(int32 ChoiceIndex)
 {
+	if (!DialogueWidget || bWaitingTransition) return;
 	if (RandomIndex >= RandomMax) {
 		UE_LOG(LogTemp, Warning, TEXT("[LRY] All random events have been shown."));
 		return;
 	}
 
-	const FChoice& Delta = (ChoiceIndex == 0) ? CurrentEvent.LeftModify : CurrentEvent.RightModify;
-	Intelligence += Delta.Intelligence;
-	Charm        += Delta.Charm;
-	Energy      += Delta.Stamina;
+	bWaitingTransition = true;
+	PendingChoiceIndex = ChoiceIndex;
+
+	FlowStage = EFlowStage::WaitingExit;
 	
-	if (DialogueWidget)
-	{
-		DialogueWidget->SetStats(Intelligence, Charm, Energy);
-	}
+	DialogueWidget->PlayEventOut(ChoiceIndex);
+}
+
+void AMaskPlayerController::HandleUITransitionFinished()
+{
+	if (!DialogueWidget) return;
+	
+	if (FlowStage != EFlowStage::WaitingExit) return;
+	
+	const FChoice& Delta = (PendingChoiceIndex == 0) ? CurrentEvent.LeftModify : CurrentEvent.RightModify;
+
+	Intelligence = FMath::Clamp(Intelligence + Delta.Intelligence, 0, MaxIntelligence);
+	Charm        = FMath::Clamp(Charm + Delta.Charm, 0, MaxCharm);
+	Energy       = FMath::Clamp(Energy + Delta.Stamina, 0, MaxEnergy);
+
+	DialogueWidget->SetStats(Intelligence, Charm, Energy);
 	
 	ShowRandomEvent();
+	DialogueWidget->PlayEventIn();
+	
+	PendingChoiceIndex = -1;
+	FlowStage = EFlowStage::Idle;
+	bWaitingTransition = false;
 }
 
 void AMaskPlayerController::ShowRandomEvent()
@@ -88,7 +112,7 @@ void AMaskPlayerController::ShowRandomEvent()
 	}
 	
 	CurrentEvent = *Row;
-	DialogueWidget->SetEventText(
+	DialogueWidget->SetEvent(
 		CurrentEvent.Question,
 		CurrentEvent.LeftChoice,
 		CurrentEvent.RightChoice
