@@ -16,12 +16,7 @@ void AHqGameModeBase::BeginPlay()
     PC = Cast<AMaskPlayerController>(GetWorld()->GetPlayerControllerIterator()->Get());
     PC->BGMComponent->SetSound(MainMusic);
     PC->BGMComponent->Play();
-
-    UTitleUserWidget* TitleUI = CreateWidget<UTitleUserWidget>(PC, BeginWidgetClass);
-    if (TitleUI)
-    {
-        TitleUI->AddToViewport(100); // 放在最前面
-    }
+    BackToTitleUI();
     GameI = GetGameInstance()->GetSubsystem<UHqGameInstanceSubsystem>();
 
 }
@@ -63,6 +58,15 @@ void AHqGameModeBase::OnStatsChangedHandler(int32 Intel, int32 Charm, int32 Stam
 void AHqGameModeBase::StartMainUI()
 {
     PC->InitialDialogueWidget();
+}
+
+void AHqGameModeBase::BackToTitleUI()
+{
+    UTitleUserWidget* TitleUI = CreateWidget<UTitleUserWidget>(PC, BeginWidgetClass);
+    if (TitleUI)
+    {
+        TitleUI->AddToViewport(100); // 放在最前面
+    }
 }
 
 void AHqGameModeBase::TriggerEnding(FName EndingRowName)

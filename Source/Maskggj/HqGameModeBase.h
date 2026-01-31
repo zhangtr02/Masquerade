@@ -35,6 +35,8 @@ public:
 
 	UFUNCTION()
 	void StartMainUI();
+	UFUNCTION()
+	void BackToTitleUI();
 
 private:
 	AMaskPlayerController* PC;
