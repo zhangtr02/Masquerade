@@ -45,10 +45,10 @@ void AMaskPlayerController::InitialDialogueWidget()
 	ShowRandomEvent();
 	DialogueWidget->PlayEventIn();
 
-	SetShowMouseCursor(true);
-	FInputModeGameAndUI Mode;
-	Mode.SetHideCursorDuringCapture(false);
-	SetInputMode(Mode);
+	//SetShowMouseCursor(true);
+	//FInputModeGameAndUI Mode;
+	//Mode.SetHideCursorDuringCapture(false);
+	//SetInputMode(Mode);
 }
 
 void AMaskPlayerController::InitialTable()

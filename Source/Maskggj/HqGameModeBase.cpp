@@ -11,7 +11,6 @@ void AHqGameModeBase::BeginPlay()
 {
     Super::BeginPlay();
 
-    //游戏流程待加入主界面 目前是直接加载对话了
     PC = Cast<AMaskPlayerController>(GetWorld()->GetPlayerControllerIterator()->Get());
     PC->BGMComponent->SetSound(MainMusic);
     PC->BGMComponent->Play();
