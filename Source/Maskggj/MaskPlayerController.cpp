@@ -110,10 +110,7 @@ void AMaskPlayerController::HandleChoiceClicked(int32 ChoiceIndex)
 		OnStatsChanged.Broadcast(Intelligence, Charm, Stamina, RandomIndex);
 		return;
 	}
-	if (RandomIndex == ShuffleSettings.Random1_start)
-	{
-		DialogueWidget->SetVisible(); // 调用你 UW 的接口
-	}
+
 	bWaitingTransition = true;
 	PendingChoiceIndex = ChoiceIndex;
 
@@ -148,6 +145,12 @@ void AMaskPlayerController::HandleUITransitionFinished()
 	{
 		return;
 	}
+	
+	if (RandomIndex == ShuffleSettings.Random1_start)
+	{
+		DialogueWidget->SetVisible(); // 调用你 UW 的接口
+	}
+	
 	ShowRandomEvent();
 	DialogueWidget->PlayEventIn();
 	
