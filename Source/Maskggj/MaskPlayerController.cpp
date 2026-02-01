@@ -167,6 +167,7 @@ void AMaskPlayerController::InitialDialogueWidget()
 	Intelligence = 50;
 	Charm = 50;
 	Stamina = 50;
+	ShuffleThreeStage(*CurrentRowNames);
 
 	bWaitingTransition = false;
 	bIsGameOver = false;
@@ -193,6 +194,7 @@ void AMaskPlayerController::InitialDialogueWidget()
 	DialogueWidget->MaxStamina = MaxStamina;
 
 	DialogueWidget->SetStats(Intelligence, Charm, Stamina);
+
 	ShowRandomEvent();
 	DialogueWidget->PlayEventIn();
 	
@@ -207,7 +209,6 @@ void AMaskPlayerController::InitialTable()
 
 	GameI->RandomRowNames = RandomTable->GetRowNames();
 	CurrentRowNames = &GameI->RandomRowNames;
-	ShuffleThreeStage(*CurrentRowNames);
 }
 
 void AMaskPlayerController::ShuffleThreeStage(TArray<FName>& RowNameList)
