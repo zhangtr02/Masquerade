@@ -12,7 +12,6 @@ AMaskPlayerController::AMaskPlayerController()
 	BGMComponent->bAutoActivate = false;
 	SFXComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("SFXComponent"));
 	SFXComponent->bAutoActivate = false; 
-	
 }
 
 void AMaskPlayerController::BeginPlay()
@@ -69,6 +68,7 @@ void AMaskPlayerController::InitialTable()
 		GameI->LoadConfig(AssetConfig);
 
 		GameI->RandomRowNames = RandomTable->GetRowNames();
+		//GameI->EndRowNames = RandomTable->GetRowNames();
 		//存储表格rowname的指针
 		CurrentRowNames = &GameI->RandomRowNames;
 		ShuffleThreeStage(*CurrentRowNames);

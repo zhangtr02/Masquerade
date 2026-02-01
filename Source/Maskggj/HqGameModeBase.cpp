@@ -10,7 +10,6 @@
 void AHqGameModeBase::BeginPlay()
 {
     Super::BeginPlay();
-
     PC = Cast<AMaskPlayerController>(GetWorld()->GetPlayerControllerIterator()->Get());
 
     PC->SetShowMouseCursor(true);
@@ -22,6 +21,7 @@ void AHqGameModeBase::BeginPlay()
     EndingUI = CreateWidget<UEndStoryUserWidget>(PC, EndingWidgetClass);
     BackToTitleUI();
     GameI = GetGameInstance()->GetSubsystem<UHqGameInstanceSubsystem>();
+    GameI->EndRowNames = EndingTable->GetRowNames();
 
 }
 
@@ -44,6 +44,7 @@ void AHqGameModeBase::OnStatsChangedHandler(int32 Intel, int32 Charm, int32 Stam
     if (!GameI->RandomRowNames.IsValidIndex(Index)) {
         EndingRowName = TEXT("Ending_TE");
     }
+    UE_LOG(LogTemp, Warning, TEXT("[LRY] OnStatsChanged: Intel=%d, Charm=%d, Stamina=%d, CurrentIndex=%d"), Intel, Charm, Stamina, Index);
     if (Intel == 0) EndingRowName = TEXT("Ending_LowIntel");
     else if (Charm == 0) EndingRowName = TEXT("Ending_LowCharm");
     else if(Stamina == 0 )  EndingRowName = TEXT("Ending_LowStamina");
