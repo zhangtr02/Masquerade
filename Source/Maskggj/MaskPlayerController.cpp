@@ -32,6 +32,9 @@ void AMaskPlayerController::InitialDialogueWidget()
 	Intelligence = 50;
 	Charm = 50;
 	Stamina = 50;
+	bWaitingTransition = false;
+	bIsGameOver = false;
+	FlowStage = EFlowStage::Idle;
 	if (!DialogueWidgetClass) return;
 	DialogueWidget = CreateWidget<UDialogueWidget>(this, DialogueWidgetClass);
 	if (!DialogueWidget) return;
