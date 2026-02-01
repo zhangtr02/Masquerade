@@ -28,6 +28,10 @@ void AMaskPlayerController::BeginPlay()
 
 void AMaskPlayerController::InitialDialogueWidget()
 {
+	RandomIndex = 0;
+	Intelligence = 50;
+	Charm = 50;
+	Stamina = 50;
 	if (!DialogueWidgetClass) return;
 	DialogueWidget = CreateWidget<UDialogueWidget>(this, DialogueWidgetClass);
 	if (!DialogueWidget) return;
@@ -211,6 +215,7 @@ void AMaskPlayerController::CloseDialogueWidget()
 	{
 		DialogueWidget->RemoveFromParent();
 		DialogueWidget = nullptr;
+		UE_LOG(LogTemp, Warning, TEXT("[LRY] Remove dialogue ui"));
 		//FInputModeGameOnly GameMode;
 		//SetInputMode(GameMode);
 		//SetShowMouseCursor(false);

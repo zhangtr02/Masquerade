@@ -23,10 +23,15 @@ public:
 	TObjectPtr<UButton> EndBtn;
 	UPROPERTY(EditAnywhere, Category = "Logic")
 	TSubclassOf<UUserWidget> MainMenuWidgetClass;
+
+	UPROPERTY(Transient, meta = (BindWidgetAnim)) TObjectPtr<UWidgetAnimation> Anim_Focus1;
+
 	UFUNCTION()
 	void OnEndBtnClicked();
 
 	virtual void NativeConstruct() override;
+
+	void OnFocusFinished();
 public:
 	void SetupWidget(UTexture2D* Texture, FText Content);
 };
