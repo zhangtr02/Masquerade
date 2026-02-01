@@ -109,10 +109,7 @@ void AMaskPlayerController::HandleChoiceClicked(int32 ChoiceIndex)
 		UE_LOG(LogTemp, Warning, TEXT("[LRY] All story events of this table have been shown."));
 		return;
 	}
-	if (RandomIndex == ShuffleSettings.Random1_start)
-	{
-		DialogueWidget->SetVisible(); // 调用你 UW 的接口
-	}
+
 	bWaitingTransition = true;
 	PendingChoiceIndex = ChoiceIndex;
 
@@ -147,6 +144,12 @@ void AMaskPlayerController::HandleUITransitionFinished()
 	{
 		return;
 	}
+	
+	if (RandomIndex == ShuffleSettings.Random1_start)
+	{
+		DialogueWidget->SetVisible(); // 调用你 UW 的接口
+	}
+	
 	ShowRandomEvent();
 	DialogueWidget->PlayEventIn();
 	
