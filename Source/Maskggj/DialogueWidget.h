@@ -15,6 +15,7 @@ class UProgressBar;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDialogueChoiceClicked, int32, ChoiceIndex);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDialogueTransitionFinished);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnStatsAnimationFinished);
 
 /**
  * 
@@ -85,6 +86,8 @@ public:
 	
 	UPROPERTY(BlueprintAssignable) FOnDialogueChoiceClicked OnChoiceClicked;
 	UPROPERTY(BlueprintAssignable) FOnDialogueTransitionFinished OnTransitionFinished;
+
+	UPROPERTY(BlueprintAssignable, Category = "Events")FOnStatsAnimationFinished OnStatsAnimationFinished;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) int32 MaxIntelligence = 100;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) int32 MaxCharm = 100;

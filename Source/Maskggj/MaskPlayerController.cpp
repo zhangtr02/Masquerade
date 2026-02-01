@@ -45,6 +45,7 @@ void AMaskPlayerController::InitialDialogueWidget()
 
 	DialogueWidget->OnChoiceClicked.AddDynamic(this, &AMaskPlayerController::HandleChoiceClicked);
 	DialogueWidget->OnTransitionFinished.AddDynamic(this, &AMaskPlayerController::HandleUITransitionFinished);
+	DialogueWidget->OnStatsAnimationFinished.AddDynamic(this, &AMaskPlayerController::HandleStatsAnimFinished);
 
 	DialogueWidget->MaxIntelligence = MaxIntelligence;
 	DialogueWidget->MaxCharm = MaxCharm;
@@ -134,13 +135,13 @@ void AMaskPlayerController::HandleUITransitionFinished()
 	Stamina = FMath::Clamp(Stamina + Delta.Stamina, 0, MaxStamina);
 
 	DialogueWidget->SetStats(Intelligence, Charm, Stamina);
-	if (OnStatsChanged.IsBound())
-	{
-		OnStatsChanged.Broadcast(Intelligence, Charm, Stamina, RandomIndex);
-	}
-	else {
+	//if (OnStatsChanged.IsBound())
+	//{
+	//	OnStatsChanged.Broadcast(Intelligence, Charm, Stamina, RandomIndex);
+	//}
+	//else {
 
-	}
+	//}
 
 	// GameMode 监听到事件后，如果判定故事结束，会调用GameOver() 把 bIsGameOver 设为 true
 	if (bIsGameOver)
@@ -159,6 +160,14 @@ void AMaskPlayerController::HandleUITransitionFinished()
 	PendingChoiceIndex = -1;
 	FlowStage = EFlowStage::Idle;
 	bWaitingTransition = false;
+}
+
+void AMaskPlayerController::HandleStatsAnimFinished()
+{
+	if (OnStatsChanged.IsBound())
+	{
+		OnStatsChanged.Broadcast(Intelligence, Charm, Stamina, RandomIndex);
+	}
 }
 
 void AMaskPlayerController::ShowRandomEvent()

@@ -17,7 +17,9 @@ void AHqGameModeBase::BeginPlay()
     FInputModeGameAndUI Mode;
     Mode.SetHideCursorDuringCapture(false);
     PC->SetInputMode(Mode);
-    
+
+    TitleUI = CreateWidget<UUserWidget>(PC, BeginWidgetClass);
+    EndingUI = CreateWidget<UEndStoryUserWidget>(PC, EndingWidgetClass);
     BackToTitleUI();
     GameI = GetGameInstance()->GetSubsystem<UHqGameInstanceSubsystem>();
 
@@ -68,7 +70,7 @@ void AHqGameModeBase::BackToTitleUI()
     PC->BGMComponent->SetSound(MainMusic);
     PC->BGMComponent->FadeIn(1.0f, 1.0f);
     PC->BGMComponent->Play();
-    UUserWidget* TitleUI = CreateWidget<UUserWidget>(PC, BeginWidgetClass);
+    //UUserWidget* TitleUI = CreateWidget<UUserWidget>(PC, BeginWidgetClass);
     if (TitleUI)
     {
         TitleUI->AddToViewport(100); // 放在最前面
@@ -83,21 +85,20 @@ void AHqGameModeBase::TriggerEnding(FName EndingRowName)
     {
         PC->AudioComponent->Stop();
     }
-    PC->BGMComponent->Stop();
     if (EndingRowName == TEXT("Ending_TE")) {
+        UE_LOG(LogTemp, Warning, TEXT("[LRY] TE MUSIC"));
         PC->BGMComponent->SetSound(TEMusic);
-    }
-    else {
+    }else{
+        UE_LOG(LogTemp, Warning, TEXT("[LRY] BE MUSIC"));
         PC->BGMComponent->SetSound(BEMusic);
     }
-    PC->BGMComponent->FadeIn(1.0f, 1.0f);
-    //PC->BGMComponent->Stop();
+    //PC->BGMComponent->FadeIn(1.0f, 1.0f);
 
     UE_LOG(LogTemp, Warning, TEXT("[LRY] Attempting to trigger ending: %s"), *EndingRowName.ToString());
     FEndItem* Row = EndingTable->FindRow<FEndItem>(EndingRowName, TEXT("GetEnding"));
     if (Row)
     {
-        UEndStoryUserWidget* EndingUI = CreateWidget<UEndStoryUserWidget>(PC, EndingWidgetClass);
+        //UEndStoryUserWidget* EndingUI = CreateWidget<UEndStoryUserWidget>(PC, EndingWidgetClass);
         if (EndingUI)
         {
             UTexture2D* EndImg = Row->Image.LoadSynchronous();;

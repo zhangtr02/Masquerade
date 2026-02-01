@@ -138,6 +138,13 @@ void UDialogueWidget::SetStats(int32 Intelligence, int32 Charm, int32 Stamina)
 	{
 		PlayAnimation(StaminaRedGlowAnim, 0.f, 1, EUMGSequencePlayMode::Forward, 1.f);
 	}
+	float AnimDuration = 0.8f;
+
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]()
+		{
+			OnStatsAnimationFinished.Broadcast();
+		}, AnimDuration, false);
 	
 	LastInt = Intelligence;
 	LastCharm = Charm;

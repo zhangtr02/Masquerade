@@ -45,4 +45,6 @@ public:
 private:
 	AMaskPlayerController* PC;
 	UHqGameInstanceSubsystem* GameI;
+	class UUserWidget* TitleUI;
+	class UEndStoryUserWidget* EndingUI;
 };
