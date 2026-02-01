@@ -117,7 +117,7 @@ private:
 	
 	UFUNCTION()
 	void HandleUITransitionFinished();
-
+	UFUNCTION()
 	void HandleStatsAnimFinished();
 	UFUNCTION()
 	void ShowRandomEvent();
