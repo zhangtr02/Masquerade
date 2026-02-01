@@ -15,12 +15,12 @@ void UDialogueWidget::NativeOnInitialized()
 	
 	if (LeftChoiceButton)
 	{
-		LeftChoiceButton->OnClicked.AddDynamic(this, &UDialogueWidget::OnLeftChoiceButtonClicked);
+		LeftChoiceButton->OnClicked.AddUniqueDynamic(this, &UDialogueWidget::OnLeftChoiceButtonClicked);
 	}
 
 	if (RightChoiceButton)
 	{
-		RightChoiceButton->OnClicked.AddDynamic(this, &UDialogueWidget::OnRightChoiceButtonClicked);
+		RightChoiceButton->OnClicked.AddUniqueDynamic(this, &UDialogueWidget::OnRightChoiceButtonClicked);
 	}
 	
 	if (BackgroundImage) BackgroundImage->SetVisibility(ESlateVisibility::HitTestInvisible);

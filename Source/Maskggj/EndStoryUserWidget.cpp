@@ -1,106 +1,129 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "EndStoryUserWidget.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
-#include "HqGameModeBase.h"
-#include "Blueprint/UserWidget.h"
-#include "Kismet/GameplayStatics.h"
-
+#include "MaskPlayerController.h"
 
 void UEndStoryUserWidget::NativeConstruct()
 {
-    Super::NativeConstruct();
+	Super::NativeConstruct();
+	
+	if (EndBtn)
+	{
+		EndBtn->OnClicked.RemoveDynamic(this, &UEndStoryUserWidget::OnEndBtnClicked);
+		EndBtn->OnClicked.AddDynamic(this, &UEndStoryUserWidget::OnEndBtnClicked);
+	}
 
-    FWidgetAnimationDynamicEvent EndEvent;
-    EndEvent.BindDynamic(this, &UEndStoryUserWidget::OnFocusFinished);
-    BindToAnimationFinished(Anim_Focus1, EndEvent);
-    if (EndBtn)
-    {
-        EndBtn->OnClicked.AddDynamic(this, &UEndStoryUserWidget::OnEndBtnClicked);
-    }
-    PlayAnimation(Anim_Focus1, 0.f, 1, EUMGSequencePlayMode::Forward, 1.f);
+	if (Anim_Focus1)
+	{
+		FWidgetAnimationDynamicEvent EndEvent;
+		EndEvent.BindDynamic(this, &UEndStoryUserWidget::OnFocusFinished);
+		
+		BindToAnimationFinished(Anim_Focus1, EndEvent);
 
-    GetWorld()->GetTimerManager().SetTimer(
-        TypewriterTimerHandle,
-        this,
-        &UEndStoryUserWidget::UpdateTypewriterText,
-        TypewriterSpeed,
-        true
-    );
+		PlayAnimation(Anim_Focus1, 0.f, 1, EUMGSequencePlayMode::Forward, 1.f);
+	}
+	
+	if (UWorld* World = GetWorld())
+	{
+		World->GetTimerManager().ClearTimer(TypewriterTimerHandle);
+		World->GetTimerManager().SetTimer(
+			TypewriterTimerHandle,
+			this,
+			&UEndStoryUserWidget::UpdateTypewriterText,
+			TypewriterSpeed,
+			true
+		);
+	}
+}
+
+void UEndStoryUserWidget::NativeDestruct()
+{
+	if (UWorld* World = GetWorld())
+	{
+		World->GetTimerManager().ClearTimer(TypewriterTimerHandle);
+	}
+	Super::NativeDestruct();
 }
 
 void UEndStoryUserWidget::OnFocusFinished()
 {
-    UE_LOG(LogTemp, Warning, TEXT("[LRY] End CG end"));
-    StoryText->SetVisibility(ESlateVisibility::Visible);
+	if (StoryText)
+	{
+		StoryText->SetVisibility(ESlateVisibility::Visible);
+	}
 }
 
 void UEndStoryUserWidget::SetupWidget(UTexture2D* Texture, FText Content)
 {
-	if (CGImage && Texture) CGImage->SetBrushFromTexture(Texture);
+	if (CGImage && Texture)
+	{
+		CGImage->SetBrushFromTexture(Texture);
+	}
 
-    FullStoryString = Content.ToString();
-    CurrentCharIndex = 0;
+	FullStoryString = Content.ToString();
+	CurrentCharIndex = 0;
 
-    if (StoryText) StoryText->SetText(FText::GetEmpty());
+	if (StoryText)
+	{
+		StoryText->SetText(FText::GetEmpty());
+	}
 }
 
 void UEndStoryUserWidget::UpdateTypewriterText()
 {
-    if (CurrentCharIndex < FullStoryString.Len())
-    {
-        CurrentCharIndex++;
+	if (!StoryText) return;
 
-        // 换行
-        if (FullStoryString.IsValidIndex(CurrentCharIndex) &&
-            FullStoryString[CurrentCharIndex - 1] == '\\' &&
-            FullStoryString[CurrentCharIndex] == 'n')
-        {
-            CurrentCharIndex++;
-        }
+	if (CurrentCharIndex < FullStoryString.Len())
+	{
+		CurrentCharIndex++;
+		
+		if (FullStoryString.IsValidIndex(CurrentCharIndex) &&
+			FullStoryString[CurrentCharIndex - 1] == '\\' &&
+			FullStoryString[CurrentCharIndex] == 'n')
+		{
+			CurrentCharIndex++;
+		}
 
-        FString DisplayString = FullStoryString.Left(CurrentCharIndex);
-
-        // 将转义的 \n 替换为换行
-        StoryText->SetText(FText::FromString(DisplayString.Replace(TEXT("\\n"), TEXT("\n"))));
-    }
-    else
-    {
-        // 打字结束，清理定时器
-        GetWorld()->GetTimerManager().ClearTimer(TypewriterTimerHandle);
-    }
+		FString DisplayString = FullStoryString.Left(CurrentCharIndex);
+		StoryText->SetText(FText::FromString(DisplayString.Replace(TEXT("\\n"), TEXT("\n"))));
+	}
+	else
+	{
+		if (UWorld* World = GetWorld())
+		{
+			World->GetTimerManager().ClearTimer(TypewriterTimerHandle);
+		}
+	}
 }
 
 void UEndStoryUserWidget::OnEndBtnClicked()
 {
-    UE_LOG(LogTemp, Warning, TEXT("[LRY] Clicked End Button"));
-    AHqGameModeBase* MyGM = Cast<AHqGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (UWorld* World = GetWorld())
+	{
+		if (World->GetTimerManager().IsTimerActive(TypewriterTimerHandle))
+		{
+			World->GetTimerManager().ClearTimer(TypewriterTimerHandle);
 
-    if (GetWorld()->GetTimerManager().IsTimerActive(TypewriterTimerHandle))
-    {
-        UE_LOG(LogTemp, Warning, TEXT("[LRY] Typewriter Skipped"));
+			if (StoryText)
+			{
+				StoryText->SetText(FText::FromString(FullStoryString.Replace(TEXT("\\n"), TEXT("\n"))));
+			}
 
-        GetWorld()->GetTimerManager().ClearTimer(TypewriterTimerHandle);
-
-        if (StoryText)
-        {
-            StoryText->SetText(FText::FromString(FullStoryString.Replace(TEXT("\\n"), TEXT("\n"))));
-        }
-
-        CurrentCharIndex = FullStoryString.Len();
-        return;
-    }
-
-    if (MyGM)
-    {
-        MyGM->BackToTitleUI();
-        RemoveFromParent();
-    }
-    else
-    {
-        UE_LOG(LogTemp, Error, TEXT("[LRY]无法获取到GameMode"));
-    }
+			CurrentCharIndex = FullStoryString.Len();
+			return;
+		}
+	}
+	
+	if (APlayerController* PC = GetOwningPlayer())
+	{
+		if (AMaskPlayerController* MPC = Cast<AMaskPlayerController>(PC))
+		{
+			MPC->ShowTitleUI();
+		}
+	}
+	
+	RemoveFromParent();
 }
