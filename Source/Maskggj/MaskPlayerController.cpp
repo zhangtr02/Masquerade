@@ -104,6 +104,7 @@ void AMaskPlayerController::HandleChoiceClicked(int32 ChoiceIndex)
 	if (!CurrentRowNames->IsValidIndex(RandomIndex))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[LRY] All story events of this table have been shown."));
+		OnStatsChanged.Broadcast(Intelligence, Charm, Stamina, RandomIndex);
 		return;
 	}
 	if (RandomIndex == ShuffleSettings.Random1_start)
@@ -133,7 +134,7 @@ void AMaskPlayerController::HandleUITransitionFinished()
 	DialogueWidget->SetStats(Intelligence, Charm, Stamina);
 	if (OnStatsChanged.IsBound())
 	{
-		OnStatsChanged.Broadcast(Intelligence, Charm, Stamina);
+		OnStatsChanged.Broadcast(Intelligence, Charm, Stamina, RandomIndex);
 	}
 	else {
 

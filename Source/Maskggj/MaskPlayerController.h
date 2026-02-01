@@ -11,7 +11,7 @@
 
 class UDialogueWidget;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnPlayerStatsChanged, int32, Intel, int32, Charm, int32, Stamina);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnPlayerStatsChanged, int32, Intel, int32, Charm, int32, Stamina, int32, Index);
 USTRUCT(BlueprintType)
 struct FShuffleConfig
 {

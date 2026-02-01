@@ -16,6 +16,10 @@ class MASKGGJ_API AHqGameModeBase : public AGameModeBase
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<USoundBase> MainMusic;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<USoundBase> BEMusic;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<USoundBase> TEMusic;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
 	TObjectPtr<UDataTable> EndingTable;
@@ -31,7 +35,7 @@ public:
 	UFUNCTION()
 	void TriggerEnding(FName EndingRowName);
 	UFUNCTION()
-	void OnStatsChangedHandler(int32 Intel, int32 Charm, int32 Stamina);
+	void OnStatsChangedHandler(int32 Intel, int32 Charm, int32 Stamina, int32 Index);
 
 	UFUNCTION()
 	void StartMainUI();

@@ -12,8 +12,7 @@ void AHqGameModeBase::BeginPlay()
     Super::BeginPlay();
 
     PC = Cast<AMaskPlayerController>(GetWorld()->GetPlayerControllerIterator()->Get());
-    PC->BGMComponent->SetSound(MainMusic);
-    PC->BGMComponent->Play();
+
     PC->SetShowMouseCursor(true);
     FInputModeGameAndUI Mode;
     Mode.SetHideCursorDuringCapture(false);
@@ -36,12 +35,13 @@ void AHqGameModeBase::PostLogin(APlayerController* NewPlayer)
     }
 }
 
-void AHqGameModeBase::OnStatsChangedHandler(int32 Intel, int32 Charm, int32 Stamina)
+void AHqGameModeBase::OnStatsChangedHandler(int32 Intel, int32 Charm, int32 Stamina, int32 Index)
 {
     if (!PC) return;
-
     FName EndingRowName = NAME_None;
-
+    if (!GameI->RandomRowNames.IsValidIndex(Index)) {
+        EndingRowName = TEXT("Ending_TE");
+    }
     if (Intel == 0) EndingRowName = TEXT("Ending_LowIntel");
     else if (Charm == 0) EndingRowName = TEXT("Ending_LowCharm");
     else if(Stamina == 0 )  EndingRowName = TEXT("Ending_LowStamina");
@@ -64,6 +64,10 @@ void AHqGameModeBase::StartMainUI()
 
 void AHqGameModeBase::BackToTitleUI()
 {
+    PC->BGMComponent->FadeOut(1.0f, 0.0f);
+    PC->BGMComponent->SetSound(MainMusic);
+    PC->BGMComponent->FadeIn(1.0f, 1.0f);
+    PC->BGMComponent->Play();
     UUserWidget* TitleUI = CreateWidget<UUserWidget>(PC, BeginWidgetClass);
     if (TitleUI)
     {
@@ -74,6 +78,20 @@ void AHqGameModeBase::BackToTitleUI()
 void AHqGameModeBase::TriggerEnding(FName EndingRowName)
 {
     if (!PC || !EndingTable || !EndingWidgetClass) return;
+    //PC->BGMComponent->FadeOut(1.0f, 0.0f);
+    if (PC->AudioComponent->IsPlaying())
+    {
+        PC->AudioComponent->Stop();
+    }
+    PC->BGMComponent->Stop();
+    if (EndingRowName == TEXT("Ending_TE")) {
+        PC->BGMComponent->SetSound(TEMusic);
+    }
+    else {
+        PC->BGMComponent->SetSound(BEMusic);
+    }
+    PC->BGMComponent->FadeIn(1.0f, 1.0f);
+    //PC->BGMComponent->Stop();
 
     UE_LOG(LogTemp, Warning, TEXT("[LRY] Attempting to trigger ending: %s"), *EndingRowName.ToString());
     FEndItem* Row = EndingTable->FindRow<FEndItem>(EndingRowName, TEXT("GetEnding"));

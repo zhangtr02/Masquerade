@@ -13,7 +13,7 @@
 void UEndStoryUserWidget::NativeConstruct()
 {
     Super::NativeConstruct();
-    StoryText->SetVisibility(ESlateVisibility::Hidden);
+    //StoryText->SetVisibility(ESlateVisibility::Hidden);
     FWidgetAnimationDynamicEvent EndEvent;
     EndEvent.BindDynamic(this, &UEndStoryUserWidget::OnFocusFinished);
     BindToAnimationFinished(Anim_Focus1, EndEvent);
