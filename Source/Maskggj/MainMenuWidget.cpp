@@ -7,6 +7,7 @@
 #include "Components/Button.h"
 #include "Components/CanvasPanelSlot.h"
 #include "Components/Image.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 class AHqGameModeBase;
@@ -50,6 +51,11 @@ void UMainMenuWidget::NativeConstruct()
 
 void UMainMenuWidget::OnStartClicked()
 {
+	if (StartClickSFX)
+	{
+		UGameplayStatics::PlaySound2D(this, StartClickSFX);
+	}
+	
 	if (!GetWorld())
 	{
 		return;
@@ -66,6 +72,11 @@ void UMainMenuWidget::OnStartClicked()
 
 void UMainMenuWidget::OnExitClicked()
 {
+	if (ExitClickSFX)
+	{
+		UGameplayStatics::PlaySound2D(this, ExitClickSFX);
+	}
+	
 	UKismetSystemLibrary::QuitGame(
 		this,
 		nullptr,

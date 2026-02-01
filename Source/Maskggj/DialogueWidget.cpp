@@ -7,6 +7,7 @@
 #include "Components/Image.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
+#include "Kismet/GameplayStatics.h"
 
 void UDialogueWidget::NativeOnInitialized()
 {
@@ -198,6 +199,12 @@ void UDialogueWidget::PlayEventOut(int32 PickedIndex, float StartAtTime)
 	SetChoicesEnabled(false);
 	CurrentStage = EDialogueAnimStage::EventOut;
 	PendingFinishCount = 0;
+	
+	const bool bPortraitVisible = PortraitImage && PortraitImage->GetVisibility() != ESlateVisibility::Hidden;
+	if (bPortraitVisible  && ChoiceOutSFX)
+	{
+		UGameplayStatics::PlaySound2D(this, ChoiceOutSFX);
+	}
 	
 	LastPickedIndex = PickedIndex;
 	
