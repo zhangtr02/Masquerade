@@ -195,8 +195,7 @@ void AMaskPlayerController::InitialDialogueWidget()
 	DialogueWidget->SetStats(Intelligence, Charm, Stamina);
 	ShowRandomEvent();
 	DialogueWidget->PlayEventIn();
-
-	ApplyGameInputMode();
+	
 }
 
 void AMaskPlayerController::InitialTable()
