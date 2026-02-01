@@ -8,6 +8,7 @@
 
 class UImage;
 class UButton;
+class USoundBase;
 
 /**
  * 
@@ -25,6 +26,9 @@ public:
 	
 	UPROPERTY(Transient, meta=(BindWidgetAnim)) TObjectPtr<UWidgetAnimation> TitleFloatAnim;
 	UPROPERTY(Transient, meta=(BindWidgetAnim)) TObjectPtr<UWidgetAnimation> FlickAnim;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly) TObjectPtr<USoundBase> StartClickSFX;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly) TObjectPtr<USoundBase> ExitClickSFX;
 	
 	UPROPERTY(EditAnywhere)
 	FVector2D CandleOffset = FVector2D(-150.f, -100.f);

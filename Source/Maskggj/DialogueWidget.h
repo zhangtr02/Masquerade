@@ -75,6 +75,8 @@ public:
 	UPROPERTY(Transient, meta=(BindWidgetAnim)) TObjectPtr<UWidgetAnimation> CharmRedGlowAnim;
 	UPROPERTY(Transient, meta=(BindWidgetAnim)) TObjectPtr<UWidgetAnimation> StaminaRedGlowAnim;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly) TObjectPtr<USoundBase> ChoiceOutSFX;
+	
 	UPROPERTY(BlueprintReadOnly)
 	int32 LastPickedIndex = 0;
 	
