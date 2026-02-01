@@ -70,6 +70,9 @@ public:
 	TObjectPtr<UAudioComponent> BGMComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
+	TObjectPtr<USoundBase> Click;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
 	float BGMVolume = 0.8f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")

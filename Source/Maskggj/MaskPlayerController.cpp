@@ -11,7 +11,8 @@ AMaskPlayerController::AMaskPlayerController()
 	BGMComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("BGMComponent"));
 	BGMComponent->bAutoActivate = false;
 	SFXComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("SFXComponent"));
-	SFXComponent->bAutoActivate = false;
+	SFXComponent->bAutoActivate = false; 
+	
 }
 
 void AMaskPlayerController::BeginPlay()
@@ -20,6 +21,7 @@ void AMaskPlayerController::BeginPlay()
 	AudioComponent->VolumeMultiplier = AudioVolume;
 	BGMComponent->VolumeMultiplier = BGMVolume;
 	SFXComponent->VolumeMultiplier = SFXVolume;
+	SFXComponent->SetSound(Click);
 
 	GameI = GetGameInstance()->GetSubsystem<UHqGameInstanceSubsystem>();
 	InitialTable();
@@ -110,7 +112,7 @@ void AMaskPlayerController::HandleChoiceClicked(int32 ChoiceIndex)
 		OnStatsChanged.Broadcast(Intelligence, Charm, Stamina, RandomIndex);
 		return;
 	}
-
+	SFXComponent->Play();
 	bWaitingTransition = true;
 	PendingChoiceIndex = ChoiceIndex;
 
