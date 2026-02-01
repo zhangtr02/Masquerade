@@ -168,6 +168,7 @@ void AMaskPlayerController::HandleStatsAnimFinished()
 	{
 		OnStatsChanged.Broadcast(Intelligence, Charm, Stamina, RandomIndex);
 	}
+	RandomIndex++;
 }
 
 void AMaskPlayerController::ShowRandomEvent()
@@ -179,7 +180,7 @@ void AMaskPlayerController::ShowRandomEvent()
 		AudioComponent->Stop();
 	}
 
-	FName RowName = (*CurrentRowNames)[RandomIndex++];
+	FName RowName = (*CurrentRowNames)[RandomIndex];
 
 	const FTableItemList* Row = RandomTable->FindRow<FTableItemList>(RowName, TEXT("PickRandomEvent"));
 	if (!Row)
